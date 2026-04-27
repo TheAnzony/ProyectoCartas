@@ -1,0 +1,118 @@
+---
+config:
+  layout: elk
+  theme: dark
+---
+erDiagram
+  JUGADOR {
+    int id_jugador PK
+    varchar nombre
+    varchar apellidos
+    varchar email
+    datetime fecha_registro
+    int puntuacion_total
+  }
+  ELEMENTO {
+    int id_elemento PK
+    varchar nombre
+    varchar descripcion
+    varchar color_hex
+  }
+  CARTA {
+    int id_carta PK
+    varchar nombre
+    varchar descripcion
+    enum tipo_carta
+    int id_elemento FK
+    int coste_mana
+    int puntos_vida
+    int ataque
+    int defensa
+    enum rareza
+  }
+  EFECTO_ESTADO {
+    int id_efecto PK
+    varchar nombre
+    int id_elemento FK
+    int duracion_turnos
+    float mod_ataque
+    float mod_defensa
+  }
+  ESTADIO {
+    int id_estadio PK
+    varchar nombre
+    varchar descripcion
+    int id_elemento_activo FK
+  }
+  INTERACCION_ELEMENTO {
+    int id_elem_atacante FK
+    int id_elem_defensor FK
+    float multiplicador
+    varchar descripcion
+  }
+  MAZO {
+    int id_mazo PK
+    int id_jugador FK
+    varchar nombre
+    datetime fecha_creacion
+  }
+  MAZO_CARTA {
+    int id_mazo FK
+    int id_carta FK
+    int cantidad
+  }
+  CARTA_JUGADOR {
+    int id_jugador FK
+    int id_carta FK
+    datetime fecha_obtencion
+    int cantidad
+  }
+  PARTIDA {
+    int id_partida PK
+    int id_jugador1 FK
+    int id_jugador2 FK
+    int id_mazo_j1 FK
+    int id_mazo_j2 FK
+    int id_estadio FK
+    datetime fecha_inicio
+    datetime fecha_fin
+    int id_ganador FK
+    int turnos_totales
+  }
+  TURNO {
+    int id_turno PK
+    int id_partida FK
+    int numero_turno
+    int id_jugador_activo FK
+    int mana_disponible
+    int mana_gastado
+    int vida_j1_restante
+    int vida_j2_restante
+  }
+  TURNO_CARTA {
+    int id_turno FK
+    int id_carta FK
+    int orden_juego
+    varchar tipo_accion
+    int dano_causado
+    varchar resultado
+  }
+
+  JUGADOR ||--o{ MAZO : posee
+  JUGADOR ||--o{ CARTA_JUGADOR : colecciona
+  JUGADOR ||--o{ PARTIDA : juega_como_j1
+  JUGADOR ||--o{ PARTIDA : juega_como_j2
+  MAZO ||--o{ MAZO_CARTA : contiene
+  CARTA ||--o{ MAZO_CARTA : incluida_en
+  CARTA }o--|| ELEMENTO : pertenece_a
+  CARTA ||--o{ CARTA_JUGADOR : poseida_por
+  CARTA ||--o{ TURNO_CARTA : jugada_en
+  ELEMENTO ||--o{ EFECTO_ESTADO : genera
+  ELEMENTO ||--o{ ESTADIO : define
+  ELEMENTO ||--o{ INTERACCION_ELEMENTO : ataca_con
+  ELEMENTO ||--o{ INTERACCION_ELEMENTO : defiende_con
+  ESTADIO ||--o{ PARTIDA : escenario_de
+  MAZO ||--o{ PARTIDA : usado_j1
+  MAZO ||--o{ PARTIDA : usado_j2
+  PARTIDA ||--o{ TURNO : tiene
+  TURNO ||--o{ TURNO_CARTA : registra
