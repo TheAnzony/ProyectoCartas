@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 import conexion.ConexionBD;
 
-public class Prueba_Conexion {
+public class PruebaConexion {
 
 	public static void mostrarClientes(Connection conexion) {
 
