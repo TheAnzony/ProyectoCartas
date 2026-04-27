@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import conexion.MySQLConnection;
+import conexion.ConexionBD;
 
 public class Prueba_Conexion {
 
@@ -31,9 +31,9 @@ public class Prueba_Conexion {
 	}
 
 	public static void main(String[] MySQLConnection) {
+	
 
-		MySQLConnection db = new MySQLConnection();
-		Connection conexion = db.mySQLConnect();
+		Connection conexion = ConexionBD.getInstancia().getConexion();
 
 		// insertarClientes(conexion);
 		mostrarClientes(conexion);
