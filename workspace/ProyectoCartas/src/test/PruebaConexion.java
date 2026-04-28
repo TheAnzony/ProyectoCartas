@@ -1,11 +1,10 @@
 package test;
 
+import conexion.ConexionBD;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import conexion.ConexionBD;
 
 public class PruebaConexion {
 

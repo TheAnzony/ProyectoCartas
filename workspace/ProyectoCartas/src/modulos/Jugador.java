@@ -21,13 +21,12 @@ public class Jugador {
 		this.puntuacion_total = puntuacion_total;
 	}
 
-	public Jugador(String nombre, String apellidos, String email,
-			LocalDate fecha_registro, int puntuacion_total) {
+	public Jugador(String nombre, String apellidos, String email) {
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.email = email;
-		this.fecha_registro = fecha_registro;
-		this.puntuacion_total = puntuacion_total;
+		this.fecha_registro = LocalDate.now();
+		this.puntuacion_total = 0;
 	}
 
 	public int getId_jugador() {
