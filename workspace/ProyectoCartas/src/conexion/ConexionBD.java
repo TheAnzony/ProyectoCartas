@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class ConexionBD {
 
     // Constantes de conexión
-    private static final String URL = "jdbc:mysql://localhost:3306/ProyectoCartas";
+    private static final String URL = "jdbc:mysql://localhost:3306/juego_cartas";
     private static final String USUARIO = "root";
     private static final String PASSWORD = "";
 

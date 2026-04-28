@@ -1,6 +1,6 @@
 package modulos;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Jugador {
 
@@ -8,12 +8,11 @@ public class Jugador {
 	private String nombre;
 	private String apellidos;
 	private String email;
-	private LocalDateTime fecha_registro; // revisar tipo de dato conforme BDD
+	private LocalDate fecha_registro;
 	private int puntuacion_total;
 
-	public Jugador(int id_jugador, String nombre, String apellidos, String email, LocalDateTime fecha_registro,
-			int puntuacion_total) {
-		super();
+	public Jugador(int id_jugador, String nombre, String apellidos, String email,
+			LocalDate fecha_registro, int puntuacion_total) {
 		this.id_jugador = id_jugador;
 		this.nombre = nombre;
 		this.apellidos = apellidos;
@@ -22,8 +21,8 @@ public class Jugador {
 		this.puntuacion_total = puntuacion_total;
 	}
 
-	public Jugador(String nombre, String apellidos, String email, LocalDateTime fecha_registro, int puntuacion_total) {
-		super();
+	public Jugador(String nombre, String apellidos, String email,
+			LocalDate fecha_registro, int puntuacion_total) {
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.email = email;
@@ -63,11 +62,11 @@ public class Jugador {
 		this.email = email;
 	}
 
-	public LocalDateTime getFecha_registro() {
+	public LocalDate getFecha_registro() {
 		return fecha_registro;
 	}
 
-	public void setFecha_registro(LocalDateTime fecha_registro) {
+	public void setFecha_registro(LocalDate fecha_registro) {
 		this.fecha_registro = fecha_registro;
 	}
 
@@ -81,8 +80,8 @@ public class Jugador {
 
 	@Override
 	public String toString() {
-		return "Jugador [id_jugador=" + id_jugador + ", nombre=" + nombre + ", apellidos=" + apellidos + ", email="
-				+ email + ", fecha_registro=" + fecha_registro + ", puntuacion_total=" + puntuacion_total + "]";
+		return "Jugador [id_jugador=" + id_jugador + ", nombre=" + nombre + ", apellidos=" + apellidos
+				+ ", email=" + email + ", fecha_registro=" + fecha_registro
+				+ ", puntuacion_total=" + puntuacion_total + "]";
 	}
-
 }

@@ -1,24 +1,23 @@
 package modulos;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Mazo {
 
 	private int id_mazo;
 	private int id_jugador;
 	private String nombre;
-	private LocalDateTime fecha_creacion;
+	private LocalDate fecha_creacion;
 
-	public Mazo(int id_mazo, int id_jugador, String nombre, LocalDateTime fecha_creacion) {
-		super();
+	public Mazo(int id_mazo, int id_jugador, String nombre, LocalDate fecha_creacion) {
 		this.id_mazo = id_mazo;
 		this.id_jugador = id_jugador;
 		this.nombre = nombre;
 		this.fecha_creacion = fecha_creacion;
 	}
 
-	public Mazo(String nombre, LocalDateTime fecha_creacion) {
-		super();
+	public Mazo(int id_jugador, String nombre, LocalDate fecha_creacion) {
+		this.id_jugador = id_jugador;
 		this.nombre = nombre;
 		this.fecha_creacion = fecha_creacion;
 	}
@@ -47,18 +46,17 @@ public class Mazo {
 		this.nombre = nombre;
 	}
 
-	public LocalDateTime getFecha_creacion() {
+	public LocalDate getFecha_creacion() {
 		return fecha_creacion;
 	}
 
-	public void setFecha_creacion(LocalDateTime fecha_creacion) {
+	public void setFecha_creacion(LocalDate fecha_creacion) {
 		this.fecha_creacion = fecha_creacion;
 	}
 
 	@Override
 	public String toString() {
-		return "Mazo [id_mazo=" + id_mazo + ", id_jugador=" + id_jugador + ", nombre=" + nombre + ", fecha_creacion="
-				+ fecha_creacion + "]";
+		return "Mazo [id_mazo=" + id_mazo + ", id_jugador=" + id_jugador
+				+ ", nombre=" + nombre + ", fecha_creacion=" + fecha_creacion + "]";
 	}
-
 }

@@ -1,27 +1,25 @@
 package modulos;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Carta_jugador {
 
 	private int id_jugador;
 	private int id_carta;
-	private LocalDateTime fecha_obtencion; // REVISAR
 	private int cantidad;
+	private LocalDate fecha_obtencion;
 
-	public Carta_jugador(int id_jugador, int id_carta, LocalDateTime fecha_obtencion, int cantidad) {
-		super();
+	public Carta_jugador(int id_jugador, int id_carta, int cantidad, LocalDate fecha_obtencion) {
 		this.id_jugador = id_jugador;
 		this.id_carta = id_carta;
-		this.fecha_obtencion = fecha_obtencion;
 		this.cantidad = cantidad;
+		this.fecha_obtencion = fecha_obtencion;
 	}
 
-	public Carta_jugador(int id_carta, LocalDateTime fecha_obtencion, int cantidad) {
-		super();
+	public Carta_jugador(int id_carta, int cantidad, LocalDate fecha_obtencion) {
 		this.id_carta = id_carta;
-		this.fecha_obtencion = fecha_obtencion;
 		this.cantidad = cantidad;
+		this.fecha_obtencion = fecha_obtencion;
 	}
 
 	public int getId_jugador() {
@@ -40,14 +38,6 @@ public class Carta_jugador {
 		this.id_carta = id_carta;
 	}
 
-	public LocalDateTime getFecha_obtencion() {
-		return fecha_obtencion;
-	}
-
-	public void setFecha_obtencion(LocalDateTime fecha_obtencion) {
-		this.fecha_obtencion = fecha_obtencion;
-	}
-
 	public int getCantidad() {
 		return cantidad;
 	}
@@ -56,10 +46,17 @@ public class Carta_jugador {
 		this.cantidad = cantidad;
 	}
 
-	@Override
-	public String toString() {
-		return "Carta_jugador [id_jugador=" + id_jugador + ", id_carta=" + id_carta + ", fecha_obtencion="
-				+ fecha_obtencion + ", cantidad=" + cantidad + "]";
+	public LocalDate getFecha_obtencion() {
+		return fecha_obtencion;
 	}
 
+	public void setFecha_obtencion(LocalDate fecha_obtencion) {
+		this.fecha_obtencion = fecha_obtencion;
+	}
+
+	@Override
+	public String toString() {
+		return "Carta_jugador [id_jugador=" + id_jugador + ", id_carta=" + id_carta
+				+ ", cantidad=" + cantidad + ", fecha_obtencion=" + fecha_obtencion + "]";
+	}
 }

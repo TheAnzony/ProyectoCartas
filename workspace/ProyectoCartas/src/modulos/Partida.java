@@ -3,6 +3,7 @@ package modulos;
 import java.time.LocalDateTime;
 
 public class Partida {
+
 	private int id_partida;
 	private int id_jugador1;
 	private int id_jugador2;
@@ -10,13 +11,15 @@ public class Partida {
 	private int id_mazo_j2;
 	private int id_estadio;
 	private LocalDateTime fecha_inicio;
-	private LocalDateTime fecha_fin;
-	private int id_ganador;
+	private LocalDateTime fecha_fin;       // nullable: null si la partida está en curso
+	private Integer id_ganador;            // nullable: null si la partida está en curso
 	private int turnos_totales;
+	private double velocidad_j1;
+	private double velocidad_j2;
 
-	public Partida(int id_partida, int id_jugador1, int id_jugador2, int id_mazo_j1, int id_mazo_j2, int id_estadio,
-			LocalDateTime fecha_inicio, LocalDateTime fecha_fin, int id_ganador, int turnos_totales) {
-		super();
+	public Partida(int id_partida, int id_jugador1, int id_jugador2, int id_mazo_j1, int id_mazo_j2,
+			int id_estadio, LocalDateTime fecha_inicio, LocalDateTime fecha_fin,
+			Integer id_ganador, int turnos_totales, double velocidad_j1, double velocidad_j2) {
 		this.id_partida = id_partida;
 		this.id_jugador1 = id_jugador1;
 		this.id_jugador2 = id_jugador2;
@@ -27,6 +30,8 @@ public class Partida {
 		this.fecha_fin = fecha_fin;
 		this.id_ganador = id_ganador;
 		this.turnos_totales = turnos_totales;
+		this.velocidad_j1 = velocidad_j1;
+		this.velocidad_j2 = velocidad_j2;
 	}
 
 	public int getId_partida() {
@@ -93,11 +98,11 @@ public class Partida {
 		this.fecha_fin = fecha_fin;
 	}
 
-	public int getId_ganador() {
+	public Integer getId_ganador() {
 		return id_ganador;
 	}
 
-	public void setId_ganador(int id_ganador) {
+	public void setId_ganador(Integer id_ganador) {
 		this.id_ganador = id_ganador;
 	}
 
@@ -109,12 +114,29 @@ public class Partida {
 		this.turnos_totales = turnos_totales;
 	}
 
-	@Override
-	public String toString() {
-		return "Partida [id_partida=" + id_partida + ", id_jugador1=" + id_jugador1 + ", id_jugador2=" + id_jugador2
-				+ ", id_mazo_j1=" + id_mazo_j1 + ", id_mazo_j2=" + id_mazo_j2 + ", id_estadio=" + id_estadio
-				+ ", fecha_inicio=" + fecha_inicio + ", fecha_fin=" + fecha_fin + ", id_ganador=" + id_ganador
-				+ ", turnos_totales=" + turnos_totales + "]";
+	public double getVelocidad_j1() {
+		return velocidad_j1;
 	}
 
+	public void setVelocidad_j1(double velocidad_j1) {
+		this.velocidad_j1 = velocidad_j1;
+	}
+
+	public double getVelocidad_j2() {
+		return velocidad_j2;
+	}
+
+	public void setVelocidad_j2(double velocidad_j2) {
+		this.velocidad_j2 = velocidad_j2;
+	}
+
+	@Override
+	public String toString() {
+		return "Partida [id_partida=" + id_partida + ", id_jugador1=" + id_jugador1
+				+ ", id_jugador2=" + id_jugador2 + ", id_mazo_j1=" + id_mazo_j1
+				+ ", id_mazo_j2=" + id_mazo_j2 + ", id_estadio=" + id_estadio
+				+ ", fecha_inicio=" + fecha_inicio + ", fecha_fin=" + fecha_fin
+				+ ", id_ganador=" + id_ganador + ", turnos_totales=" + turnos_totales
+				+ ", velocidad_j1=" + velocidad_j1 + ", velocidad_j2=" + velocidad_j2 + "]";
+	}
 }
