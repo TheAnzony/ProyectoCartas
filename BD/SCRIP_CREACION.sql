@@ -13,6 +13,7 @@ USE juego_cartas;
 
 -- ============================================================
 --  1. ELEMENTO
+--  Solo 4 elementos: Fuego, Agua, Tierra, Aire
 -- ============================================================
 CREATE TABLE ELEMENTO (
     id_elemento   INT          NOT NULL AUTO_INCREMENT,
@@ -37,41 +38,27 @@ CREATE TABLE INTERACCION_ELEMENTO (
 
 
 -- ============================================================
---  3. EFECTO_ESTADO
--- ============================================================
-CREATE TABLE EFECTO_ESTADO (
-    id_efecto           INT          NOT NULL AUTO_INCREMENT,
-    id_elemento         INT          NOT NULL,
-    bonus_ataque_pct    INT          NOT NULL DEFAULT 0,
-    penalty_ataque_pct  INT          NOT NULL DEFAULT 0,
-    duracion_turnos     INT          NOT NULL DEFAULT 1,
-    descripcion         VARCHAR(255) NOT NULL,
-    PRIMARY KEY (id_efecto),
-    FOREIGN KEY (id_elemento) REFERENCES ELEMENTO(id_elemento) ON DELETE RESTRICT
-);
-
-
--- ============================================================
---  4. ESTADIO
+--  3. ESTADIO
 -- ============================================================
 CREATE TABLE ESTADIO (
     id_estadio          INT          NOT NULL AUTO_INCREMENT,
     nombre              VARCHAR(50)  NOT NULL,
     descripcion         VARCHAR(255) NOT NULL,
-    id_elemento_activo  INT          NOT NULL DEFAULT 5,
+    id_elemento_activo  INT          NOT NULL DEFAULT 1,
     PRIMARY KEY (id_estadio),
     FOREIGN KEY (id_elemento_activo) REFERENCES ELEMENTO(id_elemento) ON DELETE RESTRICT
 );
 
 
 -- ============================================================
---  5. CARTA
+--  4. CARTA
+--  Solo tipos OFENSIVA y DEFENSIVA
 -- ============================================================
 CREATE TABLE CARTA (
     id_carta     INT          NOT NULL AUTO_INCREMENT,
     nombre       VARCHAR(60)  NOT NULL,
     descripcion  VARCHAR(255) NOT NULL,
-    tipo         ENUM('OFENSIVA','DEFENSIVA','ESTADO','NEUTRAL') NOT NULL,
+    tipo         ENUM('OFENSIVA','DEFENSIVA') NOT NULL,
     id_elemento  INT          NOT NULL,
     coste_mana   INT          NOT NULL,
     ataque       INT          NOT NULL DEFAULT 0,
@@ -85,7 +72,7 @@ CREATE TABLE CARTA (
 
 
 -- ============================================================
---  6. JUGADOR
+--  5. JUGADOR
 -- ============================================================
 CREATE TABLE JUGADOR (
     id_jugador       INT          NOT NULL AUTO_INCREMENT,
@@ -99,7 +86,7 @@ CREATE TABLE JUGADOR (
 
 
 -- ============================================================
---  7. CARTA_JUGADOR
+--  6. CARTA_JUGADOR
 -- ============================================================
 CREATE TABLE CARTA_JUGADOR (
     id_jugador      INT  NOT NULL,
@@ -113,7 +100,7 @@ CREATE TABLE CARTA_JUGADOR (
 
 
 -- ============================================================
---  8. MAZO
+--  7. MAZO
 -- ============================================================
 CREATE TABLE MAZO (
     id_mazo        INT         NOT NULL AUTO_INCREMENT,
@@ -126,7 +113,7 @@ CREATE TABLE MAZO (
 
 
 -- ============================================================
---  9. MAZO_CARTA
+--  8. MAZO_CARTA
 --  Límite de 10 cartas por mazo gestionado desde Java
 -- ============================================================
 CREATE TABLE MAZO_CARTA (
@@ -140,7 +127,7 @@ CREATE TABLE MAZO_CARTA (
 
 
 -- ============================================================
---  10. PARTIDA
+--  9. PARTIDA
 -- ============================================================
 CREATE TABLE PARTIDA (
     id_partida     INT          NOT NULL AUTO_INCREMENT,
@@ -166,7 +153,7 @@ CREATE TABLE PARTIDA (
 
 
 -- ============================================================
---  11. TURNO
+--  10. TURNO
 -- ============================================================
 CREATE TABLE TURNO (
     id_turno          INT NOT NULL AUTO_INCREMENT,
@@ -184,13 +171,13 @@ CREATE TABLE TURNO (
 
 
 -- ============================================================
---  12. TURNO_CARTA
+--  11. TURNO_CARTA
 -- ============================================================
 CREATE TABLE TURNO_CARTA (
     id_turno     INT          NOT NULL,
     id_carta     INT          NOT NULL,
     orden_juego  INT          NOT NULL,
-    tipo_accion  ENUM('ESTADO','DEFENSIVA','OFENSIVA','NEUTRAL') NOT NULL,
+    tipo_accion  ENUM('DEFENSIVA','OFENSIVA') NOT NULL,
     dano_causado INT          NOT NULL DEFAULT 0,
     resultado    VARCHAR(100) NOT NULL,
     PRIMARY KEY (id_turno, id_carta, orden_juego),

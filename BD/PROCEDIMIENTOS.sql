@@ -72,12 +72,13 @@ CREATE PROCEDURE crear_partida(
     IN  p_id_jugador2    INT,
     IN  p_id_mazo_j1     INT,
     IN  p_id_mazo_j2     INT,
+    IN  p_id_estadio     INT,
     OUT p_id_partida     INT,
     OUT p_primer_jugador INT
 )
 BEGIN
-    DECLARE v_vel1            DECIMAL(5,2);
-    DECLARE v_vel2            DECIMAL(5,2);
+    DECLARE v_vel1             DECIMAL(5,2);
+    DECLARE v_vel2             DECIMAL(5,2);
     DECLARE v_cartas_coste2_j1 INT;
     DECLARE v_cartas_coste2_j2 INT;
 
@@ -127,7 +128,7 @@ BEGIN
     ) VALUES (
         p_id_jugador1, p_id_jugador2,
         p_id_mazo_j1,  p_id_mazo_j2,
-        1, NOW(),
+        p_id_estadio,  NOW(),
         v_vel1, v_vel2
     );
 
@@ -210,6 +211,7 @@ SELECT
     CONCAT(j2.nombre, ' ', j2.apellidos) AS jugador2,
     m1.nombre                            AS mazo_j1,
     m2.nombre                            AS mazo_j2,
+    e.nombre                             AS estadio,
     p.turnos_totales,
     p.velocidad_j1,
     p.velocidad_j2,
@@ -222,6 +224,7 @@ JOIN JUGADOR  j1 ON p.id_jugador1 = j1.id_jugador
 JOIN JUGADOR  j2 ON p.id_jugador2 = j2.id_jugador
 JOIN MAZO     m1 ON p.id_mazo_j1  = m1.id_mazo
 JOIN MAZO     m2 ON p.id_mazo_j2  = m2.id_mazo
+JOIN ESTADIO  e  ON p.id_estadio  = e.id_estadio
 LEFT JOIN JUGADOR jg ON p.id_ganador = jg.id_jugador;
 
 
@@ -243,3 +246,22 @@ JOIN JUGADOR  j ON cj.id_jugador = j.id_jugador
 JOIN CARTA    c ON cj.id_carta   = c.id_carta
 JOIN ELEMENTO e ON c.id_elemento = e.id_elemento
 ORDER BY j.id_jugador, e.nombre, c.tipo;
+
+
+-- ------------------------------------------------------------
+--  vista_estadisticas_elemento
+--  Cuenta y stats medios de cartas por elemento
+-- ------------------------------------------------------------
+CREATE VIEW vista_estadisticas_elemento AS
+SELECT
+    e.nombre                        AS elemento,
+    COUNT(c.id_carta)               AS total_cartas,
+    SUM(CASE WHEN c.tipo = 'OFENSIVA'  THEN 1 ELSE 0 END) AS ofensivas,
+    SUM(CASE WHEN c.tipo = 'DEFENSIVA' THEN 1 ELSE 0 END) AS defensivas,
+    ROUND(AVG(c.coste_mana), 2)     AS coste_medio,
+    ROUND(AVG(NULLIF(c.ataque, 0)), 2) AS ataque_medio_ofensivas,
+    ROUND(AVG(NULLIF(c.escudo, 0)), 2) AS escudo_medio_defensivas
+FROM CARTA c
+JOIN ELEMENTO e ON c.id_elemento = e.id_elemento
+GROUP BY e.id_elemento, e.nombre
+ORDER BY e.nombre;

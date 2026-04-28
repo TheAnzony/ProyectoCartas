@@ -1,6 +1,6 @@
 -- ============================================================
 --  JUEGO DE CARTAS COLECCIONABLE
---  Script 02 — Datos base (inicialización por defecto)
+--  Script 02 — Datos base
 --  Motor: MySQL 8.x (XAMPP, puerto 3306)
 --  Ejecutar DESPUÉS de 01_crear_bbdd.sql
 -- ============================================================
@@ -9,64 +9,61 @@ USE juego_cartas;
 
 
 -- ============================================================
---  1. ELEMENTO
+--  1. ELEMENTO — Solo 4 elementos elementales
+--  Fuego=1, Agua=2, Tierra=3, Aire=4
 -- ============================================================
 INSERT INTO ELEMENTO (nombre, descripcion, color_hex) VALUES
-('Fuego',   'Elemento agresivo. Ventaja contra Tierra, desventaja contra Agua.', '#FF4500'),
-('Agua',    'Elemento de control. Ventaja contra Fuego, desventaja contra Tierra.', '#1E90FF'),
-('Tierra',  'Elemento resistente. Ventaja contra Agua, desventaja contra Aire.', '#228B22'),
-('Aire',    'Elemento veloz. Ventaja contra Tierra, desventaja contra Fuego.', '#9370DB'),
-('Neutral', 'Sin ventaja ni desventaja elemental. Multiplicador siempre x1.00.', '#808080');
+('Fuego',  'Elemento agresivo. Ventaja contra Tierra, desventaja contra Agua.', '#FF4500'),
+('Agua',   'Elemento de control. Ventaja contra Fuego, desventaja contra Tierra.', '#1E90FF'),
+('Tierra', 'Elemento resistente. Ventaja contra Agua, desventaja contra Aire.', '#228B22'),
+('Aire',   'Elemento veloz. Ventaja contra Tierra, desventaja contra Fuego.', '#9370DB');
 
 
 -- ============================================================
 --  2. INTERACCION_ELEMENTO
---  Fuego=1, Agua=2, Tierra=3, Aire=4, Neutral=5
+--  Fuego=1, Agua=2, Tierra=3, Aire=4
+--  Ventajas: Fuego>Tierra, Agua>Fuego, Tierra>Agua, Aire>Tierra
+--  Desventaja: x0.75. Neutro/mismo elemento: x1.00
 -- ============================================================
 INSERT INTO INTERACCION_ELEMENTO VALUES
-(1,1, 1.00),(1,2, 0.75),(1,3, 1.25),(1,4, 1.00),(1,5, 1.00),
-(2,1, 1.25),(2,2, 1.00),(2,3, 0.75),(2,4, 1.00),(2,5, 1.00),
-(3,1, 0.75),(3,2, 1.25),(3,3, 1.00),(3,4, 0.75),(3,5, 1.00),
-(4,1, 1.00),(4,2, 1.00),(4,3, 1.25),(4,4, 1.00),(4,5, 1.00),
-(5,1, 1.00),(5,2, 1.00),(5,3, 1.00),(5,4, 1.00),(5,5, 1.00);
+-- Fuego atacante
+(1, 1, 1.00),
+(1, 2, 0.75),
+(1, 3, 1.25),
+(1, 4, 1.00),
+-- Agua atacante
+(2, 1, 1.25),
+(2, 2, 1.00),
+(2, 3, 0.75),
+(2, 4, 1.00),
+-- Tierra atacante
+(3, 1, 0.75),
+(3, 2, 1.25),
+(3, 3, 1.00),
+(3, 4, 0.75),
+-- Aire atacante
+(4, 1, 1.00),
+(4, 2, 1.00),
+(4, 3, 1.25),
+(4, 4, 1.00);
 
 
 -- ============================================================
---  3. EFECTO_ESTADO
---  14 efectos: 3 por elemento elemental + 2 neutrales
--- ============================================================
-INSERT INTO EFECTO_ESTADO (id_elemento, bonus_ataque_pct, penalty_ataque_pct, duracion_turnos, descripcion) VALUES
-(1, 20, 10, 2, 'Estadio Fuego estándar: +20% ataque Fuego, -10% ataque Agua durante 2 turnos'),
-(1, 20, 10, 3, 'Estadio Fuego avanzado: +20% ataque Fuego, -10% ataque Agua durante 3 turnos'),
-(1, 30, 15, 4, 'Estadio Fuego legendario: +30% ataque Fuego, -15% ataque Agua durante 4 turnos'),
-(2, 20, 10, 2, 'Estadio Agua estándar: +20% ataque Agua, -10% ataque Fuego durante 2 turnos'),
-(2, 20, 10, 3, 'Estadio Agua avanzado: +20% ataque Agua, -10% ataque Fuego durante 3 turnos'),
-(2, 30, 15, 4, 'Estadio Agua legendario: +30% ataque Agua, -15% ataque Fuego durante 4 turnos'),
-(3, 20, 10, 2, 'Estadio Tierra estándar: +20% ataque Tierra, -10% ataque Aire durante 2 turnos'),
-(3, 20, 10, 3, 'Estadio Tierra avanzado: +20% ataque Tierra, -10% ataque Aire durante 3 turnos'),
-(3, 30, 15, 4, 'Estadio Tierra legendario: +30% ataque Tierra, -15% ataque Aire durante 4 turnos'),
-(4, 20, 10, 2, 'Estadio Aire estándar: +20% ataque Aire, -10% ataque Tierra durante 2 turnos'),
-(4, 20, 10, 3, 'Estadio Aire avanzado: +20% ataque Aire, -10% ataque Tierra durante 3 turnos'),
-(4, 30, 15, 4, 'Estadio Aire legendario: +30% ataque Aire, -15% ataque Tierra durante 4 turnos'),
-(5,  0,  0, 2, 'Silencio Elemental: ningún elemento recibe bonificaciones durante 2 turnos'),
-(5,  0,  0, 3, 'Gran Silencio: ningún elemento recibe bonificaciones durante 3 turnos');
-
-
--- ============================================================
---  4. ESTADIO
---  Las partidas siempre empiezan en Campo Neutro (id=1)
+--  3. ESTADIO — 4 estadios elementales
+--  Las partidas siempre empiezan en Caldera Ígnea (id=1)
+--  por defecto, o se elige al crear la partida
 -- ============================================================
 INSERT INTO ESTADIO (nombre, descripcion, id_elemento_activo) VALUES
-('Campo Neutro',     'Sin elemento dominante. Ninguna carta recibe bonificaciones.', 5),
-('Caldera Ígnea',    'El fuego arde en el campo. Las cartas de Fuego dominan.',      1),
-('Abismo Oceánico',  'El agua lo inunda todo. Las cartas de Agua dominan.',          2),
-('Llanura Telúrica', 'La tierra vibra. Las cartas de Tierra dominan.',               3),
-('Cima Tempestuosa', 'El viento arrasa. Las cartas de Aire dominan.',                4);
+('Caldera Ígnea',    'El fuego arde en el campo. Las cartas de Fuego dominan.',  1),
+('Abismo Oceánico',  'El agua lo inunda todo. Las cartas de Agua dominan.',      2),
+('Llanura Telúrica', 'La tierra vibra. Las cartas de Tierra dominan.',           3),
+('Cima Tempestuosa', 'El viento arrasa. Las cartas de Aire dominan.',            4);
 
 
 -- ============================================================
---  5. CARTA — 66 cartas en total
---  Distribución: 28 OFENSIVA, 20 DEFENSIVA, 12 ESTADO, 6 NEUTRAL
+--  4. CARTA — 48 cartas en total
+--  Distribución: 28 OFENSIVA + 20 DEFENSIVA
+--  7 OFENSIVAS + 5 DEFENSIVAS por cada elemento (x4)
 -- ============================================================
 
 -- ── FUEGO — OFENSIVAS (7) ────────────────────────────────────
@@ -87,12 +84,6 @@ INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, ataque, e
 ('Coraza del Dragón', 'Escamas de dragón inmunes a reducción de escudo.',  'DEFENSIVA', 1, 5, 0, 32, 3, 'RARA',       'Otorga 32 de escudo (3 turnos). Inmune a efectos que reduzcan el valor del escudo.'),
 ('Égida del Fénix',   'Protección divina del ave inmortal. Se recarga.',   'DEFENSIVA', 1, 7, 0, 48, 3, 'LEGENDARIA', 'Otorga 48 de escudo (3 turnos). Si tu vida cae por debajo de 20, el escudo se recarga una vez a la mitad de su valor.');
 
--- ── FUEGO — ESTADO (3) ───────────────────────────────────────
-INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, ataque, escudo, duracion, rareza, efecto) VALUES
-('Hoguera del Alba',   'El fuego del amanecer domina el estadio.',            'ESTADO', 1, 3, 0, 0, 2, 'POCO_COMUN', 'Activa estadio Fuego durante 2 turnos. Cartas de Fuego +20% ataque. Cartas de Agua -10% ataque.'),
-('Corazón del Volcán', 'El estadio arde. El rival no puede cambiarlo.',       'ESTADO', 1, 5, 0, 0, 3, 'RARA',       'Activa estadio Fuego durante 3 turnos. Cartas de Fuego +20% ataque. El rival no puede cambiar el estadio este turno.'),
-('Apocalipsis Ígneo',  'El fuego lo consume todo. Destruye escudos rivales.', 'ESTADO', 1, 7, 0, 0, 4, 'LEGENDARIA', 'Activa estadio Fuego durante 4 turnos. Cartas de Fuego +30% ataque. Al activarse, destruye todos los escudos del rival.');
-
 -- ── AGUA — OFENSIVAS (7) ─────────────────────────────────────
 INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, ataque, escudo, duracion, rareza, efecto) VALUES
 ('Chorro de Agua',    'Potente chorro que debilita el escudo rival.',      'OFENSIVA', 2, 2, 18, 0, 0, 'COMUN',      'Causa 18 de daño. Reduce en 4 el escudo activo del rival.'),
@@ -110,12 +101,6 @@ INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, ataque, e
 ('Coraza Marina',      'Armadura de coral que premia aguantar el turno.',  'DEFENSIVA', 2, 5, 0, 28, 2, 'RARA',       'Otorga 28 de escudo (2 turnos). Si aguanta un turno completo sin romperse, ganas 1 maná extra.'),
 ('Prisión de Escarcha','Cristal de hielo que atrapa el siguiente ataque.', 'DEFENSIVA', 2, 5, 0, 30, 3, 'RARA',       'Otorga 30 de escudo (3 turnos). Si el rival ataca y no rompe el escudo, no puede volver a atacar ese turno.'),
 ('Égida del Leviatán', 'El primer ataque no le resta valor al escudo.',    'DEFENSIVA', 2, 7, 0, 46, 3, 'LEGENDARIA', 'Otorga 46 de escudo (3 turnos). El primer ataque recibido es absorbido completamente sin restar valor al escudo.');
-
--- ── AGUA — ESTADO (3) ────────────────────────────────────────
-INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, ataque, escudo, duracion, rareza, efecto) VALUES
-('Lluvia Torrencial',  'Tormenta que activa el estadio Agua y cura.',     'ESTADO', 2, 3, 0, 0, 2, 'POCO_COMUN', 'Activa estadio Agua durante 2 turnos. Cartas de Agua +20% ataque. Recuperas 4 puntos de vida al activarlo.'),
-('Inundación',         'El agua domina. El rival pierde 1 maná.',         'ESTADO', 2, 5, 0, 0, 3, 'RARA',       'Activa estadio Agua durante 3 turnos. Cartas de Agua +20% ataque. El rival pierde 1 maná en su próximo turno.'),
-('Diluvio Primordial', 'Cancela el estadio rival y causa daño directo.',  'ESTADO', 2, 7, 0, 0, 4, 'LEGENDARIA', 'Activa estadio Agua durante 4 turnos. Cartas de Agua +30% ataque. Cancela el estadio rival activo y le causa 5 de daño.');
 
 -- ── TIERRA — OFENSIVAS (7) ───────────────────────────────────
 INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, ataque, escudo, duracion, rareza, efecto) VALUES
@@ -135,12 +120,6 @@ INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, ataque, e
 ('Losa Sísmica',        'Al romperse, causa daño directo al rival.',          'DEFENSIVA', 3, 5, 0, 32, 3, 'RARA',       'Otorga 32 de escudo (3 turnos). Al romperse, causa 6 de daño directo al rival.'),
 ('Égida de la Montaña', 'Cada ataque absorbido devuelve 5 al rival.',         'DEFENSIVA', 3, 7, 0, 50, 3, 'LEGENDARIA', 'Otorga 50 de escudo (3 turnos). Cada ataque absorbido devuelve 5 de daño directo al rival.');
 
--- ── TIERRA — ESTADO (3) ──────────────────────────────────────
-INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, ataque, escudo, duracion, rareza, efecto) VALUES
-('Raíces Ancestrales', 'Las raíces más antiguas dominan y curan.',          'ESTADO', 3, 3, 0, 0, 2, 'POCO_COMUN', 'Activa estadio Tierra durante 2 turnos. Cartas de Tierra +20% ataque. Recuperas 5 puntos de vida al activarlo.'),
-('Dominio Telúrico',   'La tierra domina el campo y regenera cada turno.',  'ESTADO', 3, 5, 0, 0, 3, 'RARA',       'Activa estadio Tierra durante 3 turnos. Cartas de Tierra +20% ataque. Cada turno que persiste recuperas 4 de vida.'),
-('Era de Piedra',      'Reduce los escudos del rival a la mitad.',          'ESTADO', 3, 7, 0, 0, 4, 'LEGENDARIA', 'Activa estadio Tierra durante 4 turnos. Cartas de Tierra +30% ataque. Los escudos del rival quedan reducidos a la mitad al activarse.');
-
 -- ── AIRE — OFENSIVAS (7) ─────────────────────────────────────
 INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, ataque, escudo, duracion, rareza, efecto) VALUES
 ('Ráfaga Cortante',      'Cuchilla de viento con prioridad de ataque.',       'OFENSIVA', 4, 2, 19, 0, 0, 'COMUN',      'Causa 19 de daño. Tiene prioridad: se resuelve antes que cualquier otra ofensiva del turno.'),
@@ -159,26 +138,9 @@ INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, ataque, e
 ('Escudo del Huracán',    'Al agotarse o romperse, contraataca al rival.',         'DEFENSIVA', 4, 5, 0, 30, 3, 'RARA',       'Otorga 30 de escudo (3 turnos). Al agotarse o romperse, causa 8 de daño directo al rival.'),
 ('Égida del Cóndor',      'Alta evasión. El daño evadido no afecta al escudo.',   'DEFENSIVA', 4, 7, 0, 44, 3, 'LEGENDARIA', 'Otorga 44 de escudo (3 turnos). 40% de evasión. El daño evadido no se aplica al escudo ni al jugador.');
 
--- ── AIRE — ESTADO (3) ────────────────────────────────────────
-INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, ataque, escudo, duracion, rareza, efecto) VALUES
-('Viento del Norte',   'Viento gélido que domina el estadio y roba carta.',  'ESTADO', 4, 3, 0, 0, 2, 'POCO_COMUN', 'Activa estadio Aire durante 2 turnos. Cartas de Aire +20% ataque. Robas 1 carta adicional al activarlo.'),
-('Dominio del Viento', 'El aire reina y anula las prioridades rivales.',     'ESTADO', 4, 5, 0, 0, 3, 'RARA',       'Activa estadio Aire durante 3 turnos. Cartas de Aire +20% ataque. Las cartas con prioridad del rival pierden esa prioridad.'),
-('Tormenta Eterna',    'Devuelve las cartas de estado del rival a su mano.', 'ESTADO', 4, 7, 0, 0, 4, 'LEGENDARIA', 'Activa estadio Aire durante 4 turnos. Cartas de Aire +30% ataque. Al activarse, devuelve al rival sus cartas de estado activas a la mano.');
-
--- ── NEUTRAL (6) ──────────────────────────────────────────────
-INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, ataque, escudo, duracion, rareza, efecto) VALUES
-('Poción de Combate',  'Elixir que restaura vida en plena batalla.',         'NEUTRAL', 5, 2, 0,  0, 0, 'COMUN',      'Recuperas 15 puntos de vida inmediatamente.'),
-('Escudo Neutro',      'Barrera sin elemento, inmune a efectos de estadio.', 'NEUTRAL', 5, 2, 0, 14, 1, 'COMUN',      'Otorga 14 de escudo (1 turno). No se ve afectado por ningún efecto de estadio.'),
-('Catalizador',        'Potencia un 20% la siguiente carta jugada.',         'NEUTRAL', 5, 3, 0,  0, 0, 'POCO_COMUN', 'La siguiente carta jugada este turno hace +20% de daño, escudo o curación.'),
-('Silencio Elemental', 'Anula el estadio activo durante 2 turnos.',          'NEUTRAL', 5, 4, 0,  0, 2, 'RARA',       'Cancela el estadio elemental activo. Durante 2 turnos ninguna carta recibe bonificaciones ni penalizaciones elementales.'),
-('Gran Curación',      'Restauración masiva. Bonus si la vida es crítica.',  'NEUTRAL', 5, 5, 0,  0, 0, 'RARA',       'Recuperas 28 puntos de vida. Si tienes menos de 30 de vida, recuperas 35 en su lugar.'),
-('Reseteo Total',      'Borra todos los efectos activos del campo.',         'NEUTRAL', 5, 6, 0,  0, 0, 'EPICA',      'Anula todos los efectos activos de ambos jugadores: escudos, estados, bonificadores y penalizaciones. El estadio vuelve a Neutral. Ambos jugadores roban 1 carta.');
-
 
 -- ============================================================
---  6. JUGADOR — 2 jugadores de ejemplo
---  El resto de jugadores, colecciones, mazos y partidas
---  los generará la propia aplicación en uso.
+--  5. JUGADOR — 2 jugadores de ejemplo
 -- ============================================================
 INSERT INTO JUGADOR (nombre, apellidos, email, fecha_registro, puntuacion_total) VALUES
 ('Carlos', 'Ruiz Martínez',  'carlos.ruiz@email.com',  CURDATE(), 0),
