@@ -1,11 +1,14 @@
 package modulos;
 
-public class Carta {
+/**
+ * Clase abstracta que representa una carta del juego. Las subclases concretas
+ * son {@link CartaOfensiva} y {@link CartaDefensiva}.
+ */
+public abstract class Carta {
 
 	private int id_carta;
 	private String nombre;
 	private String descripcion;
-	private String tipo; // OFENSIVA, DEFENSIVA, ESTADO, NEUTRAL
 	private int id_elemento;
 	private int coste_mana;
 	private int ataque;
@@ -14,12 +17,12 @@ public class Carta {
 	private String rareza; // COMUN, POCO_COMUN, RARA, EPICA, LEGENDARIA
 	private String efecto;
 
-	public Carta(int id_carta, String nombre, String descripcion, String tipo, int id_elemento,
-			int coste_mana, int ataque, int escudo, int duracion, String rareza, String efecto) {
+	// ─── Constructor con id (lectura desde BD) ───────────────────────────────
+	public Carta(int id_carta, String nombre, String descripcion, int id_elemento, int coste_mana, int ataque,
+			int escudo, int duracion, String rareza, String efecto) {
 		this.id_carta = id_carta;
 		this.nombre = nombre;
 		this.descripcion = descripcion;
-		this.tipo = tipo;
 		this.id_elemento = id_elemento;
 		this.coste_mana = coste_mana;
 		this.ataque = ataque;
@@ -29,11 +32,11 @@ public class Carta {
 		this.efecto = efecto;
 	}
 
-	public Carta(String nombre, String descripcion, String tipo, int id_elemento,
-			int coste_mana, int ataque, int escudo, int duracion, String rareza, String efecto) {
+	// ─── Constructor sin id (inserción nueva en BD) ──────────────────────────
+	public Carta(String nombre, String descripcion, int id_elemento, int coste_mana, int ataque, int escudo,
+			int duracion, String rareza, String efecto) {
 		this.nombre = nombre;
 		this.descripcion = descripcion;
-		this.tipo = tipo;
 		this.id_elemento = id_elemento;
 		this.coste_mana = coste_mana;
 		this.ataque = ataque;
@@ -42,6 +45,20 @@ public class Carta {
 		this.rareza = rareza;
 		this.efecto = efecto;
 	}
+
+	// ─── Métodos abstractos ──────────────────────────────────────────────────
+
+	/**
+	 * Devuelve el tipo de carta como String para persistirlo en BD o mostrarlo en
+	 * UI. Cada subclase devuelve su valor fijo: "OFENSIVA" o "DEFENSIVA".
+	 *
+	 * @return tipo de carta
+	 */
+	public abstract String getTipo();
+
+	public abstract String aplicarEfecto();
+
+	// ─── Getters y Setters ───────────────────────────────────────────────────
 
 	public int getId_carta() {
 		return id_carta;
@@ -65,14 +82,6 @@ public class Carta {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
-	}
-
-	public String getTipo() {
-		return tipo;
-	}
-
-	public void setTipo(String tipo) {
-		this.tipo = tipo;
 	}
 
 	public int getId_elemento() {
@@ -131,11 +140,12 @@ public class Carta {
 		this.efecto = efecto;
 	}
 
+	// ─── toString ────────────────────────────────────────────────────────────
+
 	@Override
 	public String toString() {
-		return "Carta [id_carta=" + id_carta + ", nombre=" + nombre + ", tipo=" + tipo
-				+ ", id_elemento=" + id_elemento + ", coste_mana=" + coste_mana
-				+ ", ataque=" + ataque + ", escudo=" + escudo + ", duracion=" + duracion
-				+ ", rareza=" + rareza + "]";
+		return "Carta [id_carta=" + id_carta + ", nombre=" + nombre + ", tipo=" + getTipo() + ", id_elemento="
+				+ id_elemento + ", coste_mana=" + coste_mana + ", ataque=" + ataque + ", escudo=" + escudo
+				+ ", duracion=" + duracion + ", rareza=" + rareza + "]";
 	}
 }

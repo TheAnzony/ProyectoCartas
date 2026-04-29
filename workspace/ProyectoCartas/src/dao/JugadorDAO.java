@@ -25,6 +25,27 @@ public class JugadorDAO {
 	public JugadorDAO() {
 
 	}
+	
+	
+
+	private Jugador construirJugador(ResultSet rs) {
+
+		try {
+			int id = rs.getInt("id_jugador");
+			String nombre = rs.getString("nombre");
+			String apellidos = rs.getString("apellidos");
+			String email = rs.getString("email");
+			LocalDate fecha = rs.getDate("fecha_registro").toLocalDate();
+			int puntuacion = rs.getInt("puntuacion_total");
+
+			return new Jugador(id, nombre, apellidos, email, fecha, puntuacion);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+
+	}
 
 	/**
 	 * Inserta un nuevo jugador a la base de datos.
@@ -77,17 +98,11 @@ public class JugadorDAO {
 
 			ps.setInt(1, id);
 
-			ResultSet resultado = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
-			if (resultado.next()) {
-				int idj = resultado.getInt("id_jugador");
-				String nombre = resultado.getString("nombre");
-				String apellidos = resultado.getString("apellidos");
-				String email = resultado.getString("email");
-				LocalDate fecha = resultado.getDate("fecha_registro").toLocalDate();
-				int puntuacion = resultado.getInt("puntuacion_total");
+			if (rs.next()) {
 
-				return new Jugador(idj, nombre, apellidos, email, fecha, puntuacion);
+				return construirJugador(rs);
 
 			}
 
@@ -112,17 +127,12 @@ public class JugadorDAO {
 		try {
 			PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
 
-			ResultSet resultado = ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
 
-			while (resultado.next()) {
-				int id = resultado.getInt("id_jugador");
-				String nombre = resultado.getString("nombre");
-				String apellidos = resultado.getString("apellidos");
-				String email = resultado.getString("email");
-				LocalDate fecha = resultado.getDate("fecha_registro").toLocalDate();
-				int puntuacion = resultado.getInt("puntuacion_total");
+			while (rs.next()) {
 
-				lista.add(new Jugador(id, nombre, apellidos, email, fecha, puntuacion));
+				Jugador j = construirJugador(rs);
+				lista.add(j);
 
 			}
 
@@ -132,6 +142,13 @@ public class JugadorDAO {
 
 		return lista;
 
+	}
+	
+	public void mostrarLista(List<Jugador> lista) {
+		
+		for (Jugador object : lista) {
+			System.out.println(object);
+		}
 	}
 
 	/**

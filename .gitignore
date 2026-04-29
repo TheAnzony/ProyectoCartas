@@ -5,6 +5,9 @@ bin/
 tmp/
 *.log
 
+# Configuración local de Eclipse (rutas absolutas, cambian entre máquinas)
+workspace/ProyectoCartas/.classpath
+
 # Archivos de sistema
 .DS_Store
 Thumbs.db

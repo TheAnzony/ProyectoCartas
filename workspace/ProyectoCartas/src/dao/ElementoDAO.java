@@ -41,13 +41,9 @@ public class ElementoDAO {
 			ps.setString(3, elemento.getColor_hex());
 
 			int resultado = ps.executeUpdate();
+			
+			System.out.println(resultado > 0 ? "Elemento insertado correctamente" : "No se ha podido insertar el elemento");
 
-			if (resultado > 0) {
-				System.out.println("Elemento insertado correctamente");
-
-			} else {
-				System.out.println("No se ha podido insertar el elemento");
-			}
 			return resultado > 0;
 
 		} catch (SQLException e) {
@@ -147,14 +143,10 @@ public class ElementoDAO {
 			ps.setInt(4, e.getId_elemento());
 
 			int resultado = ps.executeUpdate();
+			
+			System.out.println(resultado > 0 ? "Elemento actualizado correctamente" : "No se ha podido actualizar el elemento");
 
-			if (resultado > 0) {
-				System.out.println("Elemento actualizado correctamente");
-
-			} else {
-				System.out.println("No se ha podido actualizar el elemento");
-
-			}
+			return resultado > 0;
 
 		} catch (SQLException e1) {
 			e1.printStackTrace();
@@ -181,13 +173,9 @@ public class ElementoDAO {
 			ps.setInt(1, id);
 
 			int resultado = ps.executeUpdate();
+			
+			System.out.println(resultado > 0 ? "Elemento eliminado correctamente" : "No se ha podido eliminar el elemento");
 
-			if (resultado > 0) {
-				System.out.println("Elemento eliminado correctamente");
-
-			} else {
-				System.out.println("No se ha podido eliminar el elemento");
-			}
 			return resultado > 0;
 
 		} catch (SQLException e) {
