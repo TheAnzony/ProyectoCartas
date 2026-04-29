@@ -14,9 +14,9 @@ import modulos.CartaOfensiva;
 /**
  * Clase de acceso a datos (DAO) para la entidad {@link Carta}.
  *
- * Gestiona las operaciones CRUD sobre la tabla {@code CARTA} de la base de datos.
- * Dado que {@link Carta} es abstracta, instancia {@link CartaOfensiva} o {@link CartaDefensiva}
- * según el campo {@code tipo} almacenado en BD.
+ * Gestiona las operaciones CRUD sobre la tabla {@code CARTA} de la base de
+ * datos. Dado que {@link Carta} es abstracta, instancia {@link CartaOfensiva} o
+ * {@link CartaDefensiva} según el campo {@code tipo} almacenado en BD.
  */
 public class CartaDAO {
 
@@ -28,8 +28,9 @@ public class CartaDAO {
 	}
 
 	/**
-	 * Construye un objeto {@link Carta} concreto a partir de una fila del {@link ResultSet}.
-	 * Devuelve {@link CartaOfensiva} o {@link CartaDefensiva} según el campo {@code tipo}.
+	 * Construye un objeto {@link Carta} concreto a partir de una fila del
+	 * {@link ResultSet}. Devuelve {@link CartaOfensiva} o {@link CartaDefensiva}
+	 * según el campo {@code tipo}.
 	 *
 	 * @param rs {@link ResultSet} posicionado en la fila a leer.
 	 * @return Objeto {@link Carta} concreto, o {@code null} si ocurre un error.
@@ -73,7 +74,8 @@ public class CartaDAO {
 	 * Inserta una nueva carta en la base de datos.
 	 *
 	 * @param c Objeto {@link Carta} con los datos a insertar.
-	 * @return {@code true} si la inserción fue exitosa, {@code false} en caso contrario.
+	 * @return {@code true} si la inserción fue exitosa, {@code false} en caso
+	 *         contrario.
 	 */
 	public boolean insertar(Carta c) {
 
@@ -110,7 +112,8 @@ public class CartaDAO {
 	 * Elimina una carta de la base de datos por su identificador.
 	 *
 	 * @param id Identificador de la carta a eliminar.
-	 * @return {@code true} si la eliminación fue exitosa, {@code false} en caso contrario.
+	 * @return {@code true} si la eliminación fue exitosa, {@code false} en caso
+	 *         contrario.
 	 */
 	public boolean eliminar(int id) {
 
@@ -253,5 +256,13 @@ public class CartaDAO {
 		}
 
 		return false;
+	}
+
+	public void mostrarLista() {
+
+		for (Carta carta : listar()) {
+
+			System.out.println(carta);
+		}
 	}
 }

@@ -21,7 +21,8 @@ public class PruebasDAO {
 		CartaDAO cd = new CartaDAO();
 		
 		
-		System.out.println(cd.buscar(10));
+		cd.mostrarLista();
+	
 		
 		
 		

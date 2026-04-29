@@ -20,12 +20,9 @@ public class ConexionBD {
     // Constructor privado — nadie puede hacer new ConexionBD() desde fuera
     private ConexionBD() {
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
             this.conexion = DriverManager.getConnection(URL, USUARIO, PASSWORD);
             System.out.println("Conexión exitosa a la base de datos");
-        } catch (ClassNotFoundException e) {
-            System.out.println("Error: Driver de MySQL no encontrado");
-            e.printStackTrace();
+        
         } catch (SQLException e) {
             System.out.println("Error al conectar a la base de datos");
             e.printStackTrace();
