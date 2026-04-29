@@ -21,7 +21,7 @@ public class PruebasDAO {
 		CartaDAO cd = new CartaDAO();
 		
 		
-		cd.mostrarLista();
+		jd.mostrarLista(jd.listar());
 	
 		
 		

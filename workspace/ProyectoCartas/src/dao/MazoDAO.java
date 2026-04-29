@@ -41,13 +41,10 @@ public class MazoDAO {
 			ps.setDate(3, Date.valueOf(mazo.getFecha_creacion()));
 
 			int resultado = ps.executeUpdate();
+			
+			System.out.println(resultado > 0 ? "Mazo insertado correctamente" : "No se ha podido insertar el mazo");
 
-			if (resultado > 0) {
-				System.out.println("Mazo insertado correctamente");
-				return true;
-			} else {
-				System.out.println("No se ha podido insertar el mazo");
-			}
+			return resultado > 0;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
