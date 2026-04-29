@@ -6,7 +6,7 @@ tmp/
 *.log
 
 # Configuración local de Eclipse (rutas absolutas, cambian entre máquinas)
-workspace/ProyectoCartas/.classpath
+**/.classpath
 
 # Archivos de sistema
 .DS_Store
