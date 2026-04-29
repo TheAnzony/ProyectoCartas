@@ -11,6 +11,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/Anzony/Desktop/ProyectoCartas/workspace/ProyectoCartas/lib/mysql-connector-j-9.7.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/anzon/Desktop/Proyecto Cartas/workspace/ProyectoCartas/lib/mysql-connector-j-9.7.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
