@@ -1,0 +1,20 @@
+Vale te voy a decir como tengo pensado mi juego. 
+
+Necesito hacer una aplicacion en java con java swing y la libreria db connect. La aplicacion tendra su menu para con distintos botones. Iniciar partida, cartas, mazo e historial. Cartas mostrara todas las cartas disponibles del juego, habra sistema para filtrar cartas. Mazo sera el menu donde el jugador podra añadir cartas a su mazo para las partidas, sistema de añadir con posibles filtros. Historial sera un resumen de las partidas de ese jugador. 
+
+Una partida constara de 2 jugadores y un estadio. El objetivo es que con el uso de las cartas derrotas al jugador contrario bajandole la vida a 0.
+Cada jugador tendra su id, nombre, apellidos, email, apodo, fecha de registro y una puntuacion global (MMR).
+
+Los jugadores podran usar cartas, cada carta tendra su id, nombre, descripcion, tipo de carta (ofensiva, defensiva, estado), coste de mana, daño, escudo, duracion, rareza (comun, poco comun, raro, epico, legendario), el tipo de elemento de la carta y la velocidad de la carta.
+
+Cada elemento tendra su id, nombre y descripcion
+
+Cada estadio tendra su id, nombre, descripcion, elemento inicial y el elemento activo
+
+Tambien habra un registro de partidas donde se guardara cada jugador, su mazo, el estadio en el que se ha jugado, la fecha de cuando fue la partida, el id del ganador y el numero de turnos.
+
+Cada jugador tendra un mana maximo segun en el numero de turno global que nos encontremos en la partida, esto limita a los jugadores a poder usar un numero limitado de cartas que es segun el mana que cueste la carta y el maximo que tenga en ese turno. (No se como compaginar o que almacenar en los turnos para que una partida lleve su funcionamiento correctamente me tendras que ayudar).
+
+Habra una funcionalidad que sera interaccion con elementos, hemos dicho que un estadio puede tener un elemento activo y segun el elemento de la carta usado hara daño doble o daño a la mitad al enemigo para asi jugar con los diferentes elementos de las cartas.
+
+Te voy a añadir una parte importante. los turnos globales cada jugador decidira usar unas cartas sobre un tiempo estimado digamos 1 minuto y medio. Los jugadores decidiran que usar y despues los 2 jugaran sus cartas en el mismo turno para que asi no haya desventajas. Habra una forma de calcular que jugador va a jugar sus cartas primero por ejemplo un calculo de velocidad de turno en caso de empate de las velocidades de las cartas, haciendo una media de las usadas en ese turno. En caso de otro empate elegir aleatoriamente la primera carta con mayor velocidad.

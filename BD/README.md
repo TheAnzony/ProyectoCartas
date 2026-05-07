@@ -2,9 +2,9 @@
 
 ## Orden de ejecución
 
-1. `01_crear_bbdd.sql` — Crea la base de datos y todas las tablas
-2. `02_insertar_datos.sql` — Inserta los datos base (cartas, elementos, estadios)
-3. `03_procedimientos.sql` — Crea funciones, procedimientos y vistas
+1. `SCRIP_CREACION.sql` — Crea la base de datos y todas las tablas
+2. `INSERCION.sql` — Inserta los datos base (elementos, interacciones, estadios, cartas, jugadores)
+3. `PROCEDIMIENTOS.sql` — Crea funciones, procedimientos y vistas
 
 ## Conexión
 - Host: `127.0.0.1:3306`
@@ -12,5 +12,5 @@
 - Cadena JDBC: `jdbc:mysql://127.0.0.1:3306/juego_cartas`
 
 ## Documentación
-Ver `documentacion_bbdd.md` para la descripción completa de tablas,
+Ver `instrucciones.md` para la descripción completa de tablas,
 relaciones, funciones y consejos de mantenimiento.
