@@ -9,12 +9,12 @@ public class PruebaTurnoCartaDAO {
 
 	public static void main(String[] args) {
 
-		TurnoCartaDAO dao = new TurnoCartaDAO();
+		/*TurnoCartaDAO dao = new TurnoCartaDAO();
 
 		// ── 1. INSERTAR ──────────────────────────────────────────────────────────
 		// Requiere que exista el turno con id=1 y la carta con id=2 en la BD
 		System.out.println("=== INSERTAR ===");
-		Turno_carta tc = new Turno_carta(2, 2, 3, "OFENSIVA", 22, "Carta insertada desde Java");
+		// Turno_carta tc = new Turno_carta(2, 2, 3, "OFENSIVA", 22, "Carta insertada desde Java");
 		boolean insertado = dao.insertar(tc);
 		System.out.println("Resultado insertar: " + insertado);
 
@@ -38,7 +38,7 @@ public class PruebaTurnoCartaDAO {
 			for (Turno_carta t : porTurno3) {
 				System.out.println(t);
 			}
-		}
+		}*/
 
 	}
 

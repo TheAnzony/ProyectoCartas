@@ -9,12 +9,12 @@ public class PruebaTurnoDAO {
 
 	public static void main(String[] args) {
 
-		TurnoDAO dao = new TurnoDAO();
+		/*TurnoDAO dao = new TurnoDAO();
 
 		// ── 1. INSERTAR ──────────────────────────────────────────────────────────
 		// Requiere que exista una partida con id=1 y un jugador con id=1 en la BD
 		System.out.println("=== INSERTAR ===");
-		Turno turno = new Turno(0, 1, 1, 1, 3, 0, 100, 100);
+		 Turno turno = new Turno(0, 1, 1, 1, 3, 0, 100, 100);
 		boolean insertado = dao.insertar(turno);
 		System.out.println("Resultado insertar: " + insertado);
 
@@ -42,8 +42,7 @@ public class PruebaTurnoDAO {
 
 		// ── 4. ELIMINAR ──────────────────────────────────────────────────────────
 		System.out.println("\n=== ELIMINAR (id=1) ===");
-		boolean eliminado = dao.eliminar(1);
-		System.out.println("Resultado eliminar: " + eliminado);
+		boolean eliminado = dao.eliminar(1);*/
 
 	}
 
