@@ -1,43 +1,23 @@
 package modulos;
 
 /**
- * Carta de tipo DEFENSIVA. Aplica un escudo al jugador activo con un valor y
- * una duración determinados por la propia carta.
+ * Carta de tipo DEFENSIVA. Aplica un escudo al jugador activo con
+ * un valor y una duración determinados por la propia carta.
  */
 public class CartaDefensiva extends Carta {
 
-	// ─── Constructores ───────────────────────────────────────────────────────
+    public CartaDefensiva(int id_carta, String nombre, String descripcion, int id_elemento, int coste_mana,
+            int dano, int escudo, int duracion, int velocidad, String rareza) {
+        super(id_carta, nombre, descripcion, id_elemento, coste_mana, dano, escudo, duracion, velocidad, rareza);
+    }
 
-	/**
-	 * Constructor con id — usado al leer desde la base de datos.
-	 */
-	public CartaDefensiva(int id_carta, String nombre, String descripcion, int id_elemento, int coste_mana, int ataque,
-			int escudo, int duracion, String rareza, String efecto) {
-		super(id_carta, nombre, descripcion, id_elemento, coste_mana, ataque, escudo, duracion, rareza, efecto);
-	}
+    public CartaDefensiva(String nombre, String descripcion, int id_elemento, int coste_mana,
+            int dano, int escudo, int duracion, int velocidad, String rareza) {
+        super(nombre, descripcion, id_elemento, coste_mana, dano, escudo, duracion, velocidad, rareza);
+    }
 
-	/**
-	 * Constructor sin id — usado al crear una carta nueva antes de insertarla en
-	 * BD.
-	 */
-	public CartaDefensiva(String nombre, String descripcion, int id_elemento, int coste_mana, int ataque, int escudo,
-			int duracion, String rareza, String efecto) {
-		super(nombre, descripcion, id_elemento, coste_mana, ataque, escudo, duracion, rareza, efecto);
-	}
-
-	// ─── Métodos abstractos implementados ────────────────────────────────────
-
-	/**
-	 * Devuelve siempre "DEFENSIVA" para persistencia en BD y visualización en UI.
-	 */
-	@Override
-	public String getTipo() {
-		return "DEFENSIVA";
-	}
-
-	
-	@Override
-	public String aplicarEfecto() {
-		return "";
-	}
+    @Override
+    public String getTipo() {
+        return "DEFENSIVA";
+    }
 }

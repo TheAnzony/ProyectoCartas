@@ -1,4 +1,3 @@
-
 package dao;
 
 import java.sql.PreparedStatement;
@@ -10,169 +9,142 @@ import conexion.ConexionBD;
 import modulos.Estadio;
 
 /**
- * Clase de acceso a datos (DAO) para la entidad {@link Estadio} Gestiona las
- * operaciones CRUD sobre la tabla {@code ESTADIO} de la base de datos
+ * Clase de acceso a datos (DAO) para la entidad {@link Estadio}.
+ * Gestiona las operaciones CRUD sobre la tabla {@code ESTADIO} de la base de datos.
  */
 public class EstadioDAO {
 
-	/**
-	 * Constructor vacío solo para usar métodos
-	 */
-	public EstadioDAO() {
+    public EstadioDAO() {}
 
-	}
+    /**
+     * Inserta un nuevo estadio en la base de datos.
+     *
+     * @param estadio Objeto {@link Estadio} con los datos a insertar.
+     * @return {@code true} si la inserción fue exitosa, {@code false} en caso contrario.
+     */
+    public boolean insertar(Estadio estadio) {
+        String sql = "INSERT INTO estadio (nombre, descripcion, id_elemento_inicial, id_elemento_activo) VALUES (?, ?, ?, ?)";
 
-	/**
-	 * Inserta un nuevo estadio a la base de datos. * @param estadio Objeto
-	 * {@link Estadio} con los datos a insertar.
-	 * 
-	 * @return {@code true} si la inserción fue exitosa, {@code false} en caso
-	 *         contrario.
-	 */
-	public boolean insertar(Estadio estadio) {
+        try {
+            PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
+            ps.setString(1, estadio.getNombre());
+            ps.setString(2, estadio.getDescripcion());
+            ps.setInt(3, estadio.getId_elemento_inicial());
+            ps.setInt(4, estadio.getId_elemento_activo());
 
-		String sql = "INSERT INTO estadio (nombre, descripcion, id_elemento_activo) VALUES (?, ?, ?)";
+            int resultado = ps.executeUpdate();
+            System.out.println(resultado > 0 ? "Estadio insertado correctamente" : "No se ha podido insertar el estadio");
+            return resultado > 0;
 
-		try {
-			PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
-			ps.setString(1, estadio.getNombre());
-			ps.setString(2, estadio.getDescripcion());
-			ps.setInt(3, estadio.getId_elemento_activo());
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
-			int resultado = ps.executeUpdate();
+    /**
+     * Busca un estadio por su identificador.
+     *
+     * @param id Identificador del estadio a buscar.
+     * @return Objeto {@link Estadio}, o {@code null} si no existe.
+     */
+    public Estadio buscar(int id) {
+        String sql = "SELECT * FROM estadio WHERE id_estadio = ?";
 
-			System.out
-					.println(resultado > 0 ? "Estadio insertado correctamente" : "No se ha podido insertar el estadio");
+        try {
+            PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
 
-			return resultado > 0;
+            if (rs.next()) {
+                return new Estadio(
+                    rs.getInt("id_estadio"),
+                    rs.getString("nombre"),
+                    rs.getString("descripcion"),
+                    rs.getInt("id_elemento_inicial"),
+                    rs.getInt("id_elemento_activo")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+    /**
+     * Recupera todos los estadios de la base de datos.
+     *
+     * @return Lista de objetos {@link Estadio}. Vacía si no hay ninguno.
+     */
+    public List<Estadio> listar() {
+        String sql = "SELECT * FROM estadio";
+        List<Estadio> lista = new ArrayList<>();
 
-		return false;
-	}
+        try {
+            PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
 
-	/**
-	 * Busca un estadio en la base de datos por su identificador.
-	 *
-	 * @param id Identificador del estadio a buscar.
-	 * @return Objeto {@link Estadio} con los datos encontrados, o {@code null} si
-	 *         no existe.
-	 */
-	public Estadio buscar(int id) {
+            while (rs.next()) {
+                lista.add(new Estadio(
+                    rs.getInt("id_estadio"),
+                    rs.getString("nombre"),
+                    rs.getString("descripcion"),
+                    rs.getInt("id_elemento_inicial"),
+                    rs.getInt("id_elemento_activo")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
 
-		String sql = "SELECT * FROM estadio WHERE id_estadio = ?";
+    /**
+     * Actualiza los datos de un estadio existente.
+     *
+     * @param e Objeto {@link Estadio} con los nuevos datos (debe tener id_estadio válido).
+     * @return {@code true} si la actualización fue exitosa, {@code false} en caso contrario.
+     */
+    public boolean actualizar(Estadio e) {
+        String sql = "UPDATE estadio SET nombre = ?, descripcion = ?, id_elemento_inicial = ?, id_elemento_activo = ? WHERE id_estadio = ?";
 
-		try {
-			PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
-			ps.setInt(1, id);
+        try {
+            PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
+            ps.setString(1, e.getNombre());
+            ps.setString(2, e.getDescripcion());
+            ps.setInt(3, e.getId_elemento_inicial());
+            ps.setInt(4, e.getId_elemento_activo());
+            ps.setInt(5, e.getId_estadio());
 
-			ResultSet resultado = ps.executeQuery();
+            int resultado = ps.executeUpdate();
+            System.out.println(resultado > 0 ? "Estadio actualizado correctamente" : "No se ha podido actualizar el estadio");
+            return resultado > 0;
 
-			if (resultado.next()) {
-				int ide = resultado.getInt("id_estadio");
-				String nombre = resultado.getString("nombre");
-				String descripcion = resultado.getString("descripcion");
-				int idElemento = resultado.getInt("id_elemento_activo");
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        }
+        return false;
+    }
 
-				return new Estadio(ide, nombre, descripcion, idElemento);
-			}
+    /**
+     * Elimina un estadio por su identificador.
+     *
+     * @param id Identificador del estadio a eliminar.
+     * @return {@code true} si la eliminación fue exitosa, {@code false} en caso contrario.
+     */
+    public boolean eliminar(int id) {
+        String sql = "DELETE FROM estadio WHERE id_estadio = ?";
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+        try {
+            PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
+            ps.setInt(1, id);
+            int resultado = ps.executeUpdate();
+            System.out.println(resultado > 0 ? "Estadio eliminado correctamente" : "No se ha podido eliminar el estadio");
+            return resultado > 0;
 
-		return null;
-	}
-
-	/**
-	 * Recupera todos los estadios de la base de datos.
-	 *
-	 * @return Lista de objetos {@link Estadio}. Vacía si no hay ninguno.
-	 */
-	public List<Estadio> listar() {
-
-		String sql = "SELECT * FROM estadio";
-		List<Estadio> lista = new ArrayList<Estadio>();
-
-		try {
-			PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
-			ResultSet resultado = ps.executeQuery();
-
-			while (resultado.next()) {
-				int ide = resultado.getInt("id_estadio");
-				String nombre = resultado.getString("nombre");
-				String descripcion = resultado.getString("descripcion");
-				int idElemento = resultado.getInt("id_elemento_activo");
-
-				lista.add(new Estadio(ide, nombre, descripcion, idElemento));
-			}
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return lista;
-	}
-
-	/**
-	 * Actualiza los datos de un estadio existente en la base de datos.
-	 *
-	 * @param e Objeto {@link Estadio} con los nuevos datos.
-	 * @return {@code true} si la actualización fue exitosa, {@code false} en caso
-	 *         contrario.
-	 */
-	public boolean actualizar(Estadio e) {
-		String sql = "UPDATE estadio SET nombre = ?, descripcion = ?, id_elemento_activo = ? WHERE id_estadio = ?";
-
-		try {
-			PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
-			ps.setString(1, e.getNombre());
-			ps.setString(2, e.getDescripcion());
-			ps.setInt(3, e.getId_elemento_activo());
-			ps.setInt(4, e.getId_estadio());
-
-			int resultado = ps.executeUpdate();
-
-			System.out.println(
-					resultado > 0 ? "Estadio actualizado correctamente" : "No se ha podido actualizar el estadio");
-
-			return resultado > 0;
-
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-
-		return false;
-	}
-
-	/**
-	 * Elimina un estadio de la base de datos por su identificador.
-	 *
-	 * @param id Identificador del estadio a eliminar.
-	 * @return {@code true} si la eliminación fue exitosa, {@code false} en caso
-	 *         contrario.
-	 */
-	public boolean eliminar(int id) {
-
-		String sql = "DELETE FROM estadio WHERE id_estadio = ?";
-
-		try {
-			PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
-			ps.setInt(1, id);
-
-			int resultado = ps.executeUpdate();
-
-			System.out
-					.println(resultado > 0 ? "Estadio eliminado correctamente" : "No se ha podido eliminar el estadio");
-
-			return resultado > 0;
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-		return false;
-	}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

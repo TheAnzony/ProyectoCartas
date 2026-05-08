@@ -16,7 +16,7 @@ public class PruebaElementoDAO {
 
 		System.out.println("--- PRUEBA 1: INSERTAR ---");
 		// Usamos el constructor sin ID porque la base de datos lo genera (AUTO_INCREMENT)
-		Elemento nuevoElemento = new Elemento("Fuego", "Elemento muy caliente", "#FF0000");
+		Elemento nuevoElemento = new Elemento(1, "Fuego", "Elemento muy caliente");
 		dao.insertar(nuevoElemento);
 		
 		
@@ -53,7 +53,6 @@ public class PruebaElementoDAO {
 				// Le cambiamos algunos datos
 				elementoEncontrado.setNombre("Fuego Mágico");
 				elementoEncontrado.setDescripcion("Ahora quema el doble");
-				elementoEncontrado.setColor_hex("#FF4500");
 				
 				// Llamamos al DAO para actualizar
 				dao.actualizar(elementoEncontrado);
