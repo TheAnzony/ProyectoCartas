@@ -88,10 +88,9 @@ public class Jugador {
         this.MMR = MMR;
     }
 
+    
     @Override
     public String toString() {
-        return "Jugador [id_jugador=" + id_jugador + ", nombre=" + nombre + ", apellidos=" + apellidos
-                + ", email=" + email + ", apodo=" + apodo + ", fecha_registro=" + fecha_registro
-                + ", MMR=" + MMR + "]";
+        return this.apodo; // Esto hace que Swing pinte el apodo en el menú
     }
 }

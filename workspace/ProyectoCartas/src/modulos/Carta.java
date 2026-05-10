@@ -129,9 +129,6 @@ public abstract class Carta {
 
     @Override
     public String toString() {
-        return "Carta [id_carta=" + id_carta + ", nombre=" + nombre + ", tipo=" + getTipo()
-                + ", id_elemento=" + id_elemento + ", coste_mana=" + coste_mana + ", dano=" + dano
-                + ", escudo=" + escudo + ", duracion=" + duracion + ", velocidad=" + velocidad
-                + ", rareza=" + rareza + "]";
+        return this.nombre; // Mostrará el nombre de la carta 
     }
 }
