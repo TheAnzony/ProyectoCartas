@@ -15,7 +15,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+
+
 import controller.MainController;
+import utils.ImageUtils;
 import utils.config;
 
 public class MenuView extends JPanel implements config {
@@ -80,14 +83,14 @@ public class MenuView extends JPanel implements config {
 		oscurece.setBounds(0, 0, ANCHO, ALTO);
 		add(oscurece);
 
-		JLabel fondo = new JLabel(cargarImagen(MENU_IMAGE, ANCHO, ALTO));
+		JLabel fondo = new JLabel(ImageUtils.cargarImagen(MENU_IMAGE, ANCHO, ALTO));
 		fondo.setBounds(0, 0, ANCHO, ALTO);
 		add(fondo);
 	}
 
 	private JLabel crearBoton(String ruta, int x, int y) {
-		ImageIcon iconoNormal = cargarImagen(ruta, BTN_ANCHO, BTN_ALTO);
-		ImageIcon iconoOscurecido = oscurecerImagen(iconoNormal);
+		ImageIcon iconoNormal = ImageUtils.cargarImagen(ruta, BTN_ANCHO, BTN_ALTO);
+		ImageIcon iconoOscurecido = ImageUtils.oscurecerImagen(iconoNormal);
 
 		JLabel boton = new JLabel(iconoNormal);
 		boton.setBounds(x, y, BTN_ANCHO, BTN_ALTO);
@@ -106,29 +109,6 @@ public class MenuView extends JPanel implements config {
 		return boton;
 	}
 
-	private ImageIcon cargarImagen(String ruta, int ancho, int alto) {
-		try {
-			BufferedImage original = ImageIO.read(new File(ruta));
-			BufferedImage escalada = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
-			Graphics2D g2d = escalada.createGraphics();
-			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			g2d.drawImage(original, 0, 0, ancho, alto, null);
-			g2d.dispose();
-			return new ImageIcon(escalada);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	private ImageIcon oscurecerImagen(ImageIcon icono) {
-		BufferedImage original = new BufferedImage(BTN_ANCHO, BTN_ALTO, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2d = original.createGraphics();
-		g2d.drawImage(icono.getImage(), 0, 0, null);
-		g2d.setColor(new Color(0, 0, 0, 50)); // 80 = nivel de oscurecimiento (0-255)
-		g2d.fillRect(0, 0, BTN_ANCHO, BTN_ALTO);
-		g2d.dispose();
-		return new ImageIcon(original);
-	}
+	
 
 }

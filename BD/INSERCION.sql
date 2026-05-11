@@ -83,11 +83,11 @@ INSERT INTO ESTADIO (nombre, descripcion, id_elemento_inicial, id_elemento_activ
 INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, daño, escudo, duracion, velocidad, rareza) VALUES
 ('Lanzallamas',          'Ráfaga de fuego directo al rival.',                        'OFENSIVA', 1, 2, 18, 0, 0, 8, 'COMUN'),
 ('Bola de Fuego',        'Esfera ígnea que explota al impactar.',                    'OFENSIVA', 1, 3, 22, 0, 0, 7, 'COMUN'),
-('Torbellino de Llamas', 'Remolino de fuego que ignora parte del escudo.',           'OFENSIVA', 1, 4, 28, 0, 0, 6, 'POCO_COMUN'),
+('Torbellino de Llamas', 'Remolino de fuego.',                                       'OFENSIVA', 1, 4, 28, 0, 0, 6, 'POCO_COMUN'),
 ('Dragón Joven',         'Cría de dragón hambrienta de batalla.',                    'OFENSIVA', 1, 5, 32, 0, 0, 5, 'RARO'),
 ('Lluvia de Meteoros',   'Rocas ardientes difíciles de bloquear.',                   'OFENSIVA', 1, 5, 30, 0, 0, 4, 'RARO'),
-('Fénix Renacido',       'Ave de fuego que potencia el siguiente ataque.',            'OFENSIVA', 1, 6, 38, 0, 0, 3, 'EPICO'),
-('Señor de las Llamas',  'Encarnación del fuego eterno. Aplica quemadura.',           'OFENSIVA', 1, 7, 50, 0, 0, 1, 'LEGENDARIO');
+('Fénix Renacido',       'Ave de fuego que calcina al enemigo.',                     'OFENSIVA', 1, 6, 38, 0, 0, 3, 'EPICO'),
+('Señor de las Llamas',  'Encarnación del fuego eterno.',           'OFENSIVA', 1, 7, 50, 0, 0, 1, 'LEGENDARIO');
 
 -- ── FUEGO — DEFENSIVAS (5) ───────────────────────────────────
 INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, daño, escudo, duracion, velocidad, rareza) VALUES
@@ -155,7 +155,7 @@ INSERT INTO CARTA (nombre, descripcion, tipo, id_elemento, coste_mana, daño, es
 ('Lancero del Viento',   'Lanzas de aire que penetran los escudos.',                'OFENSIVA', 4, 4, 26, 0, 0,  6, 'POCO_COMUN'),
 ('Tifón Menor',          'Tormenta que elimina completamente el escudo.',           'OFENSIVA', 4, 5, 31, 0, 0,  5, 'RARO'),
 ('Espectro del Huracán', 'Ser etéreo inmune a efectos de estado enemigos.',         'OFENSIVA', 4, 5, 34, 0, 0,  4, 'RARO'),
-('Cóndor Celestial',     'Ave mítica que hace descartar 2 cartas al rival.',        'OFENSIVA', 4, 6, 37, 0, 0,  3, 'EPICO'),
+('Cóndor Celestial',     'Ave mítica que hace mucho daño al enemigo',               'OFENSIVA', 4, 6, 37, 0, 0,  3, 'EPICO'),
 ('Señor de los Vientos', 'Deidad que ataca dos veces en estadio Aire.',             'OFENSIVA', 4, 7, 48, 0, 0,  1, 'LEGENDARIO');
 
 -- ── AIRE — DEFENSIVAS (5) ────────────────────────────────────

@@ -25,6 +25,7 @@ import javax.swing.SwingWorker;
 import controller.MainController;
 import dao.CartaDAO;
 import modulos.Carta;
+import utils.ImageUtils;
 import utils.config;
 
 /*
@@ -48,10 +49,10 @@ public class CartaView extends JPanel implements config {
 		setLayout(null);
 		setPreferredSize(new Dimension(ANCHO, ALTO));
 
-		ImageIcon cartaFuego = cargarImagen(BOX_IMAGE_FUEGO, 200, 280);
-		ImageIcon cartaAire = cargarImagen(BOX_IMAGE_AIRE, 200, 280);
-		ImageIcon cartaTierra = cargarImagen(BOX_IMAGE_TIERRA, 200, 280);
-		ImageIcon cartaAgua = cargarImagen(BOX_IMAGE_AGUA, 200, 280);
+		ImageIcon cartaFuego = ImageUtils.cargarImagen(BOX_IMAGE_FUEGO, 200, 280);
+		ImageIcon cartaAire = ImageUtils.cargarImagen(BOX_IMAGE_AIRE, 200, 280);
+		ImageIcon cartaTierra = ImageUtils.cargarImagen(BOX_IMAGE_TIERRA, 200, 280);
+		ImageIcon cartaAgua = ImageUtils.cargarImagen(BOX_IMAGE_AGUA, 200, 280);
 		
 		ArrayList<ImageIcon> cartasElementos = new ArrayList<ImageIcon>();
 		cartasElementos.add(cartaFuego);
@@ -73,8 +74,8 @@ public class CartaView extends JPanel implements config {
 		add(scroll);
 
 		// Botón volver
-		ImageIcon iconoBack = cargarImagen(ARROW_BACK, 60, 60);
-		ImageIcon iconoBackOscuro = oscurecerImagen(iconoBack, 60, 60);
+		ImageIcon iconoBack = ImageUtils.cargarImagen(ARROW_BACK, 60, 60);
+		ImageIcon iconoBackOscuro = ImageUtils.oscurecerImagen(iconoBack);
 		JLabel btnVolver = new JLabel(iconoBack);
 		btnVolver.setBounds(20, 20, 60, 60);
 		btnVolver.addMouseListener(new MouseAdapter() {
@@ -93,7 +94,7 @@ public class CartaView extends JPanel implements config {
 		add(btnVolver);
 
 		// Fondo en EDT — rápido, aparece inmediato
-		JLabel fondo = new JLabel(cargarImagen(CARTAS_IMAGE, ANCHO, ALTO));
+		JLabel fondo = new JLabel(ImageUtils.cargarImagen(CARTAS_IMAGE, ANCHO, ALTO));
 		fondo.setBounds(0, 0, ANCHO, ALTO);
 		add(fondo);
 
@@ -158,7 +159,7 @@ public class CartaView extends JPanel implements config {
 		JLabel velocidad = new JLabel(veloAux);
 		velocidad.setForeground(Color.white);
 		velocidad.setFont(new Font("Arial", Font.BOLD, 16));
-		velocidad.setBounds(200 - 31, 14, 20, 25);
+		velocidad.setBounds(200 - 31, 13, 20, 25);
 		caja.add(velocidad);
 		
 
@@ -173,29 +174,6 @@ public class CartaView extends JPanel implements config {
 
 	}
 
-	private ImageIcon cargarImagen(String ruta, int ancho, int alto) {
-		try {
-			BufferedImage original = ImageIO.read(new File(ruta));
-			BufferedImage escalada = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
-			Graphics2D g2d = escalada.createGraphics();
-			g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			g2d.drawImage(original, 0, 0, ancho, alto, null);
-			g2d.dispose();
-			return new ImageIcon(escalada);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	private ImageIcon oscurecerImagen(ImageIcon icono, int ancho, int alto) {
-		BufferedImage img = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2d = img.createGraphics();
-		g2d.drawImage(icono.getImage(), 0, 0, null);
-		g2d.setColor(new Color(0, 0, 0, 80));
-		g2d.fillRect(0, 0, ancho, alto);
-		g2d.dispose();
-		return new ImageIcon(img);
-	}
+	
 
 }
