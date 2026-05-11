@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import utils.config;
+import view.CartaView;
 import view.MenuView;
 import view.PlayersView;
 import view.StartView;
@@ -37,32 +38,7 @@ public class MainController implements config {
 	}
 
 	public void lanzarMenuPrincipal() {
-
-		MenuView menu = new MenuView(this);
-
-		
-		
-		
-		menu.getBtnSalir().addMouseListener(new MouseAdapter() {
-		    public void mouseClicked(MouseEvent e) {
-		        int opcion = JOptionPane.showConfirmDialog(
-		            ventana,
-		            "¿Seguro que quieres salir?",
-		            "Salir",
-		            JOptionPane.YES_NO_OPTION
-		        );
-		        if (opcion == JOptionPane.YES_OPTION) {
-		            System.exit(0);
-		        }
-		    }
-		});
-		
-		
-		
-		
-
-		cambiarPantalla(menu);
-
+		cambiarPantalla(new MenuView(this));
 	}
 
 	public void lanzarMenuJugador() {
@@ -72,6 +48,11 @@ public class MainController implements config {
 
 	public void lanzarPartida() {
 
+	}
+
+	public void lanzarMenuCartas() {
+
+		cambiarPantalla(new CartaView(this));
 	}
 
 	private void cambiarPantalla(JPanel nuevaPantalla) {
@@ -86,7 +67,5 @@ public class MainController implements config {
 	public JFrame getVentana() {
 		return ventana;
 	}
-	
-	
 
 }

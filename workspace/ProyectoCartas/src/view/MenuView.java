@@ -22,12 +22,6 @@ public class MenuView extends JPanel implements config {
 
 	private MainController controller;
 
-	private JLabel btnIniciarPartida;
-	private JLabel btnJugadores;
-	private JLabel btnCartas;
-	private JLabel btnHistorial;
-	private JLabel btnSalir;
-
 	private static final int BTN_ANCHO = 300;
 	private static final int BTN_ALTO = 80;
 	private static final int BTN_X = (ANCHO - BTN_ANCHO) / 2;
@@ -40,24 +34,31 @@ public class MenuView extends JPanel implements config {
 		setLayout(null);
 		setPreferredSize(new Dimension(ANCHO, ALTO));
 
-		btnIniciarPartida = crearBoton(BTN_PARTIDA, BTN_X, BTN_INICIO);
+		JLabel btnIniciarPartida = crearBoton(BTN_PARTIDA, BTN_X, BTN_INICIO);
 		btnIniciarPartida.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				controller.lanzarPartida();
 			}
 		});
 
-		btnJugadores = crearBoton(BTN_JUGADORES, BTN_X, BTN_INICIO + (BTN_ALTO + BTN_GAP));
+		JLabel btnJugadores = crearBoton(BTN_JUGADORES, BTN_X, BTN_INICIO + (BTN_ALTO + BTN_GAP));
 		btnJugadores.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				controller.lanzarMenuJugador();
 			}
 		});
 
-		btnCartas = crearBoton(BTN_CARTAS, BTN_X, BTN_INICIO + (BTN_ALTO + BTN_GAP) * 2);
-		btnHistorial = crearBoton(BTN_HISTORIAL, BTN_X, BTN_INICIO + (BTN_ALTO + BTN_GAP) * 3);
+		JLabel btnCartas = crearBoton(BTN_CARTAS, BTN_X, BTN_INICIO + (BTN_ALTO + BTN_GAP) * 2);
+		btnCartas.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				controller.lanzarMenuCartas();
+				;
+			}
+		});
 
-		btnSalir = crearBoton(BTN_SALIR, BTN_X, BTN_INICIO + (BTN_ALTO + BTN_GAP) * 4);
+		JLabel btnHistorial = crearBoton(BTN_HISTORIAL, BTN_X, BTN_INICIO + (BTN_ALTO + BTN_GAP) * 3);
+
+		JLabel btnSalir = crearBoton(BTN_SALIR, BTN_X, BTN_INICIO + (BTN_ALTO + BTN_GAP) * 4);
 		btnSalir.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 
@@ -128,26 +129,6 @@ public class MenuView extends JPanel implements config {
 		g2d.fillRect(0, 0, BTN_ANCHO, BTN_ALTO);
 		g2d.dispose();
 		return new ImageIcon(original);
-	}
-
-	public JLabel getBtnIniciarPartida() {
-		return btnIniciarPartida;
-	}
-
-	public JLabel getBtnJugadores() {
-		return btnJugadores;
-	}
-
-	public JLabel getBtnCartas() {
-		return btnCartas;
-	}
-
-	public JLabel getBtnHistorial() {
-		return btnHistorial;
-	}
-
-	public JLabel getBtnSalir() {
-		return btnSalir;
 	}
 
 }
