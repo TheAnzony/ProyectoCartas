@@ -36,16 +36,24 @@ public class CartaDAO {
             int velocidad = rs.getInt("velocidad");
             String rareza = rs.getString("rareza");
 
+            String imagen = rs.getString("imagen");
+
+            Carta carta;
             switch (tipo) {
                 case "OFENSIVA":
-                    return new CartaOfensiva(id, nombre, descripcion, idElemento, costeMana, dano, escudo, duracion, velocidad, rareza);
+                    carta = new CartaOfensiva(id, nombre, descripcion, idElemento, costeMana, dano, escudo, duracion, velocidad, rareza);
+                    break;
                 case "DEFENSIVA":
-                    return new CartaDefensiva(id, nombre, descripcion, idElemento, costeMana, dano, escudo, duracion, velocidad, rareza);
+                    carta = new CartaDefensiva(id, nombre, descripcion, idElemento, costeMana, dano, escudo, duracion, velocidad, rareza);
+                    break;
                 case "ESTADO":
-                    return new CartaEstado(id, nombre, descripcion, idElemento, costeMana, velocidad, rareza);
+                    carta = new CartaEstado(id, nombre, descripcion, idElemento, costeMana, velocidad, rareza);
+                    break;
                 default:
                     throw new IllegalArgumentException("Tipo de carta desconocido: " + tipo);
             }
+            carta.setImagen(imagen);
+            return carta;
         } catch (SQLException e) {
             e.printStackTrace();
         }

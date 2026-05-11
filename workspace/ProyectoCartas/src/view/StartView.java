@@ -4,13 +4,18 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 import controller.MainController;
+import dao.CartaDAO;
+import modulos.Carta;
+import utils.ImageUtils;
 import utils.config;
 
 public class StartView extends JPanel implements config {
@@ -20,6 +25,9 @@ public class StartView extends JPanel implements config {
 	public StartView(MainController c) {
 		// TODO Auto-generated constructor stub
 		this.controller = c;
+
+		
+
 		setLayout(null);
 		setPreferredSize(new Dimension(ANCHO, ALTO));
 

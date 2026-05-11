@@ -101,8 +101,14 @@ public class CartaView extends JPanel implements config {
 		new SwingWorker<List<Carta>, Void>() {
 			@Override
 			protected List<Carta> doInBackground() throws Exception {
-
-				return new CartaDAO().listar();
+				List<Carta> cartas = new CartaDAO().listar();
+				// Precarga imágenes individuales en background → quedan en caché
+				for (Carta carta : cartas) {
+					if (carta.getImagen() != null) {
+						ImageUtils.cargarImagen(CARTAS_DIR + carta.getImagen(), 200, 280);
+					}
+				}
+				return cartas;
 			}
 
 			@Override
@@ -126,27 +132,39 @@ public class CartaView extends JPanel implements config {
 
 	public JLabel insertarCarta(Carta c, ArrayList<ImageIcon> elementos) {
 
-		int elemento = c.getId_elemento() - 1;
-		JLabel caja = new JLabel(elementos.get(elemento));
+		// Imagen individual de la carta si existe, si no usa la del elemento
+		ImageIcon fondoCarta = (c.getImagen() != null)
+				? ImageUtils.cargarImagen(CARTAS_DIR + c.getImagen(), 200, 280)
+				: elementos.get(c.getId_elemento() - 1);
+
+		JLabel caja = new JLabel(fondoCarta);
 		caja.setLayout(null);
 		caja.setMaximumSize(new Dimension(200, 280));
 
-		// Título centrado — ocupa todo el ancho y alinea el texto al centro
-		JLabel titulo = new JLabel(c.getNombre(), JLabel.CENTER);
-		titulo.setForeground(Color.white);
-		titulo.setFont(new Font("Arial", Font.BOLD, 15));
-		titulo.setBounds(0, 50, 200, 25);
-		caja.add(titulo);
 		
-		JTextArea descripcion = new JTextArea(c.getDescripcion());
-		descripcion.setLineWrap(true);
-		descripcion.setWrapStyleWord(true);
-		descripcion.setOpaque(false);
-		descripcion.setEditable(false);
-		descripcion.setForeground(Color.white);
-		descripcion.setFont(new Font("Arial", Font.PLAIN, 14));
-		descripcion.setBounds(20, 120, 160, 130);
-		caja.add(descripcion);
+		
+		if (c.getImagen() == null) {
+			
+			// Título centrado — ocupa todo el ancho y alinea el texto al centro
+			JLabel titulo = new JLabel(c.getNombre(), JLabel.CENTER);
+			titulo.setForeground(Color.white);
+			titulo.setFont(new Font("Arial", Font.BOLD, 15));
+			titulo.setBounds(0, 50, 200, 25);
+			caja.add(titulo);
+			
+			JTextArea descripcion = new JTextArea(c.getDescripcion());
+			descripcion.setLineWrap(true);
+			descripcion.setWrapStyleWord(true);
+			descripcion.setOpaque(false);
+			descripcion.setEditable(false);
+			descripcion.setForeground(Color.white);
+			descripcion.setFont(new Font("Arial", Font.PLAIN, 14));
+			descripcion.setBounds(20, 120, 160, 130);
+			caja.add(descripcion);
+			
+		}
+		
+		
 		
 		String danoAux = c.getDano() + "";
 		JLabel dano = new JLabel(danoAux);

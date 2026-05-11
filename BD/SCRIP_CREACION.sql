@@ -77,6 +77,7 @@ CREATE TABLE CARTA (
     duracion     INT          NOT NULL DEFAULT 0,
     velocidad    INT          NOT NULL DEFAULT 5,
     rareza       ENUM('COMUN','POCO_COMUN','RARO','EPICO','LEGENDARIO') NOT NULL,
+    imagen       VARCHAR(100)          DEFAULT NULL,
     PRIMARY KEY (id_carta),
     FOREIGN KEY (id_elemento) REFERENCES ELEMENTO(id_elemento) ON DELETE RESTRICT
 );
