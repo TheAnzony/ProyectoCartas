@@ -16,6 +16,7 @@ public abstract class Carta {
     private int duracion;
     private int velocidad;
     private String rareza;
+    private String imagen;
 
     public Carta(int id_carta, String nombre, String descripcion, int id_elemento, int coste_mana,
             int dano, int escudo, int duracion, int velocidad, String rareza) {
@@ -127,8 +128,16 @@ public abstract class Carta {
         this.rareza = rareza;
     }
 
+    public String getImagen() {
+        return imagen;
+    }
+
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
+    }
+
     @Override
     public String toString() {
-        return this.nombre; // Mostrará el nombre de la carta 
+        return this.nombre;
     }
 }

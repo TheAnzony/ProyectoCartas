@@ -84,6 +84,28 @@ public class JugadorDAO {
         }
         return null;
     }
+    
+    /**
+     * Busca un jugador por su apodo.
+     *
+     * @param id Identificador del jugador.
+     * @return Objeto {@link Jugador}, o {@code null} si no existe.
+     */
+    public Jugador buscarApodo(String apodo) {
+        String sql = "SELECT * FROM jugador WHERE apodo = ?";
+
+        try {
+            PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
+            ps.setString(1, apodo);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return construirJugador(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /**
      * Recupera todos los jugadores de la base de datos.
