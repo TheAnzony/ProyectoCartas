@@ -12,7 +12,7 @@ USE juego_cartas;
 --  FUNCIONES
 -- ============================================================
 
-DELIMITER $$
+DELIMITER //
 
 -- ------------------------------------------------------------
 --  calcular_velocidad_mazo(id_mazo)
@@ -31,7 +31,7 @@ BEGIN
     JOIN CARTA c ON mc.id_carta = c.id_carta
     WHERE mc.id_mazo = p_id_mazo;
     RETURN COALESCE(v_velocidad, 0.00);
-END$$
+END//
 
 
 -- ------------------------------------------------------------
@@ -58,7 +58,7 @@ BEGIN
         ELSE                          SET v_mana = 7;
     END CASE;
     RETURN v_mana;
-END$$
+END//
 
 
 -- ------------------------------------------------------------
@@ -92,7 +92,7 @@ BEGIN
       AND id_elem_defensor = p_id_elemento_activo;
 
     RETURN ROUND(v_dano * COALESCE(v_multiplicador, 1.00));
-END$$
+END//
 
 
 -- ============================================================
@@ -124,7 +124,7 @@ BEGIN
     );
 
     SET p_id_partida = LAST_INSERT_ID();
-END$$
+END//
 
 
 -- ------------------------------------------------------------
@@ -156,7 +156,7 @@ BEGIN
     );
 
     SET p_id_turno = LAST_INSERT_ID();
-END$$
+END//
 
 
 -- ------------------------------------------------------------
