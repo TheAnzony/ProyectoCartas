@@ -188,7 +188,7 @@ BEGIN
     UPDATE JUGADOR
     SET MMR = GREATEST(0, MMR - 50)
     WHERE id_jugador = v_id_perdedor;
-END$$
+END//
 
 DELIMITER ;
 
