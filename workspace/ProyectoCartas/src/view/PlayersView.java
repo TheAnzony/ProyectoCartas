@@ -77,10 +77,16 @@ public class PlayersView extends JPanel implements config {
 			}
 		});
 		add(btnVolver);
+		
+		// 1. AÑADIMOS TODOS LOS BOTONES DE ACCIÓN PRINCIPALES
 		add(botonAnadirJugador(iconoBackOscuro, ANCHO - 600, (ALTO / 2) - 60, 150, 60));
 		add(botonEliminarJugador(iconoBackOscuro, ANCHO - 600, (ALTO / 2) + 20, 150, 60));
+		
+		// AQUÍ ESTÁ LA SOLUCIÓN: Añadimos el botón de actualizar debajo del de eliminar (+80px en Y)
+		add(botonActualizarJugador(iconoBackOscuro, ANCHO - 600, (ALTO / 2) + 100, 150, 60));
 
-		// Fondo en EDT — rápido, aparece inmediato
+		// 2. EL FONDO SE AÑADE SIEMPRE AL FINAL
+		// En Absolute Layout (null), lo último que agregas se dibuja al fondo (capa inferior)
 		JLabel fondo = new JLabel(ImageUtils.cargarImagen(JUGADORES_IMAGE, ANCHO, ALTO));
 		fondo.setBounds(0, 0, ANCHO, ALTO);
 		add(fondo);
@@ -147,8 +153,8 @@ public class PlayersView extends JPanel implements config {
 		btnAnadir.setBounds(x, y, ancho, alto);
 		btnAnadir.setForeground(Color.white);
 		btnAnadir.setBackground(new Color(60, 120, 60));
-		btnAnadir.setFocusPainted(false); // quita el borde de foco al hacer clic
-		btnAnadir.setBorderPainted(false); // quita el borde del botón
+		btnAnadir.setFocusPainted(false); 
+		btnAnadir.setBorderPainted(false); 
 		btnAnadir.addActionListener(e -> {
 
 			JTextField apodo = new JTextField();
@@ -169,13 +175,13 @@ public class PlayersView extends JPanel implements config {
 				} else {
 					dao.eliminar(jdelete.getId_jugador());
 					JOptionPane.showMessageDialog(null, "Jugador eliminado correctamente");
-					controller.lanzarMenuJugador(); // recargar la lista
+					controller.lanzarMenuJugador(); 
 				}
 
 			}
 		});
 		return btnAnadir;
-	};
+	}
 
 	private JButton botonAnadirJugador(ImageIcon imagen, int x, int y, int ancho, int alto) {
 
@@ -183,8 +189,8 @@ public class PlayersView extends JPanel implements config {
 		btnAnadir.setBounds(x, y, ancho, alto);
 		btnAnadir.setForeground(Color.white);
 		btnAnadir.setBackground(new Color(60, 120, 60));
-		btnAnadir.setFocusPainted(false); // quita el borde de foco al hacer clic
-		btnAnadir.setBorderPainted(false); // quita el borde del botón
+		btnAnadir.setFocusPainted(false); 
+		btnAnadir.setBorderPainted(false); 
 		btnAnadir.addActionListener(e -> {
 
 			JTextField nombre = new JTextField();
@@ -209,7 +215,7 @@ public class PlayersView extends JPanel implements config {
 				boolean ok = new JugadorDAO().insertar(j);
 				if (ok) {
 					JOptionPane.showMessageDialog(null, "Jugador añadido correctamente");
-					controller.lanzarMenuJugador(); // recargar la lista
+					controller.lanzarMenuJugador(); 
 				} else {
 					JOptionPane.showMessageDialog(null, "Error al añadir el jugador", "Error",
 							JOptionPane.ERROR_MESSAGE);
@@ -217,6 +223,49 @@ public class PlayersView extends JPanel implements config {
 			}
 		});
 		return btnAnadir;
-	};
+	}
+	
+	private JButton botonActualizarJugador(ImageIcon imagen, int x, int y, int ancho, int alto) {
 
+		JButton btnActualizar = new JButton("Actualizar Jugador");
+		btnActualizar.setBounds(x, y, ancho, alto);
+		btnActualizar.setForeground(Color.white);
+		btnActualizar.setBackground(new Color(60, 120, 60)); 
+		btnActualizar.setFocusPainted(false); 
+		btnActualizar.setBorderPainted(false); 
+		btnActualizar.addActionListener(e -> {
+
+			JTextField apodo = new JTextField();
+			JTextField nombre = new JTextField();
+			JTextField apellidos = new JTextField();
+			JTextField email = new JTextField();
+
+			JPanel form = new JPanel(new GridLayout(4, 2, 5, 10));
+			form.add(new JLabel("Apodo (Jugador a buscar):"));
+			form.add(apodo);
+			form.add(new JLabel("Nuevo Nombre:"));
+			form.add(nombre);
+			form.add(new JLabel("Nuevos Apellidos:"));
+			form.add(apellidos);
+			form.add(new JLabel("Nuevo Email:"));
+			form.add(email);
+
+			int result = JOptionPane.showConfirmDialog(null, form, "Actualizar jugador", JOptionPane.OK_CANCEL_OPTION);
+
+			if (result == JOptionPane.OK_OPTION) {
+				Jugador j = new Jugador(nombre.getText(), apellidos.getText(), email.getText(), apodo.getText());
+				
+				boolean ok = new JugadorDAO().actualizar(j); 
+				
+				if (ok) {
+					JOptionPane.showMessageDialog(null, "Jugador actualizado correctamente");
+					controller.lanzarMenuJugador(); 
+				} else {
+					JOptionPane.showMessageDialog(null, "Error al actualizar el jugador. Verifica que el apodo exista.", "Error",
+							JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		});
+		return btnActualizar;
+	}
 }
