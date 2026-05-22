@@ -25,8 +25,8 @@ La base de datos gestiona todos los elementos de un juego de cartas por turnos c
 Se divide en tres bloques funcionales:
 
 - **Bloque de catálogo** — datos fijos que no cambian en uso: `ELEMENTO`, `INTERACCION_ELEMENTO`, `ESTADIO`, `CARTA`
-- **Bloque de jugadores** — datos dinámicos generados por la aplicación: `JUGADOR`, `CARTA_JUGADOR`, `MAZO`, `MAZO_CARTA`
-- **Bloque de partidas** — historial completo de juego: `PARTIDA`, `TURNO`, `TURNO_CARTA`
+- **Bloque de jugadores** — datos dinámicos generados por la aplicación: `JUGADOR`, `MAZO`, `MAZO_CARTA`
+- **Bloque de partidas** — historial de juego: `PARTIDA`
 
 ---
 
@@ -79,7 +79,7 @@ Los 4 campos de batalla predefinidos.
 | `id_elemento_inicial` | INT FK | Elemento con el que arranca el estadio |
 | `id_elemento_activo` | INT FK | Elemento activo en el momento actual |
 
-> Al iniciar cada partida Java resetea `id_elemento_activo` al valor de `id_elemento_inicial`. Durante la partida las cartas ESTADO pueden cambiar `id_elemento_activo`. El TURNO almacena un snapshot del elemento activo al cierre de cada turno.
+> Al iniciar cada partida Java resetea `id_elemento_activo` al valor de `id_elemento_inicial`. Durante la partida las cartas ESTADO pueden cambiar `id_elemento_activo`.
 
 ---
 
@@ -140,19 +140,6 @@ Registro de jugadores. Generado por la aplicación en uso.
 
 ---
 
-### CARTA_JUGADOR
-Colección personal de cada jugador.
-
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id_jugador` | INT PK FK | Jugador propietario |
-| `id_carta` | INT PK FK | Carta obtenida |
-| `fecha_obtencion` | DATE | Cuándo la obtuvo |
-
-> `ON DELETE CASCADE` sobre `id_jugador`: si se borra un jugador, su colección se borra automáticamente.
-
----
-
 ### MAZO
 Mazos creados por cada jugador. Un jugador puede tener varios mazos.
 
@@ -193,88 +180,34 @@ Registro de cada partida jugada.
 | `id_ganador` | INT NULL FK | Ganador (NULL si está en curso) |
 | `num_turnos` | INT DEFAULT 0 | Total de turnos jugados |
 
----
-
-### TURNO
-Cada turno de una partida. Los turnos son **simultáneos**: ambos jugadores eligen cartas al mismo tiempo y se resuelven ordenadas por velocidad.
-
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id_turno` | INT AI PK | Identificador |
-| `id_partida` | INT FK | Partida a la que pertenece |
-| `numero_turno` | INT | Número de turno dentro de la partida |
-| `vida_j1` | INT | Vida del jugador 1 al finalizar el turno |
-| `vida_j2` | INT | Vida del jugador 2 al finalizar el turno |
-| `mana_disponible` | INT | Maná disponible ese turno (calculado por `calcular_mana`) |
-| `id_elemento_activo` | INT FK | Elemento activo del estadio al cierre del turno |
-| `id_jugador_primero` | INT FK | Jugador con mayor media de velocidad ese turno |
-| `media_velocidad_j1` | DECIMAL(5,2) | Media de velocidad de las cartas del jugador 1 |
-| `media_velocidad_j2` | DECIMAL(5,2) | Media de velocidad de las cartas del jugador 2 |
-
-> `ON DELETE CASCADE` sobre `id_partida`.
-
----
-
-### TURNO_CARTA
-Cartas jugadas en cada turno, en orden de resolución.
-
-| Campo | Tipo | Descripción |
-|---|---|---|
-| `id_turno_carta` | INT AI PK | Identificador |
-| `id_turno` | INT FK | Turno al que pertenece |
-| `id_jugador` | INT FK | Jugador que jugó la carta |
-| `id_carta` | INT FK | Carta jugada |
-| `daño_real` | INT | Daño final aplicado tras el multiplicador de elemento |
-| `orden_resolucion` | INT | Posición de resolución en el turno (por velocidad DESC) |
-
-> `ON DELETE CASCADE` sobre `id_turno`. `ON DELETE RESTRICT` sobre `id_carta`.
-
----
-
 ## 3. Relaciones y restricciones
 
 ```
 ELEMENTO ──────────────────┬── INTERACCION_ELEMENTO (FK atacante, FK defensor)
                            ├── ESTADIO (FK inicial, FK activo)
-                           ├── CARTA (FK id_elemento)
-                           └── TURNO (FK id_elemento_activo)
+                           └── CARTA (FK id_elemento)
 
-JUGADOR ───────────────────┬── CARTA_JUGADOR (CASCADE)
-                           ├── MAZO (CASCADE)
-                           ├── PARTIDA (FK jugador1, jugador2, ganador — RESTRICT)
-                           └── TURNO (FK id_jugador_primero — RESTRICT)
+JUGADOR ───────────────────┬── MAZO (CASCADE)
+                           └── PARTIDA (FK jugador1, jugador2, ganador — RESTRICT)
 
 MAZO ──────────────────────┬── MAZO_CARTA (CASCADE)
                            └── PARTIDA (FK mazo_j1, mazo_j2 — RESTRICT)
 
-CARTA ─────────────────────┬── CARTA_JUGADOR (RESTRICT)
-                           ├── MAZO_CARTA (RESTRICT)
-                           └── TURNO_CARTA (RESTRICT)
-
-PARTIDA ───────────────────└── TURNO (CASCADE)
-
-TURNO ─────────────────────└── TURNO_CARTA (CASCADE)
+CARTA ─────────────────────└── MAZO_CARTA (RESTRICT)
 ```
 
 **Resumen de comportamientos al borrar:**
 
 | Si se borra... | Efecto |
 |---|---|
-| Un `JUGADOR` | Se borran su `CARTA_JUGADOR` y sus `MAZO` (y por cascada sus `MAZO_CARTA`) |
+| Un `JUGADOR` | Se borran sus `MAZO` (y por cascada sus `MAZO_CARTA`). Requiere borrar sus `PARTIDA` antes (RESTRICT) |
 | Un `MAZO` | Se borran sus `MAZO_CARTA` |
-| Una `PARTIDA` | Se borran sus `TURNO` (y por cascada sus `TURNO_CARTA`) |
-| Un `TURNO` | Se borran sus `TURNO_CARTA` |
-| Una `CARTA` | **Bloqueado** si está en colección, mazo o ha sido jugada |
-| Un `ELEMENTO` | **Bloqueado** siempre (tiene cartas, estadios y turnos referenciados) |
+| Una `CARTA` | **Bloqueado** si está en algún mazo |
+| Un `ELEMENTO` | **Bloqueado** siempre (tiene cartas y estadios referenciados) |
 
 ---
 
 ## 4. Funciones y procedimientos
-
-### `calcular_velocidad_mazo(p_id_mazo INT)`
-Devuelve `DECIMAL(5,2)`. Media del campo `velocidad` de las cartas del mazo. Mazos con cartas más rápidas tienen mayor valor y tienen ventaja en los desempates.
-
----
 
 ### `calcular_mana(p_turno_global INT)`
 Devuelve `INT`. Escala progresiva de maná según el número de turno:
@@ -299,11 +232,6 @@ Inserta la fila en `PARTIDA` con los dos jugadores, sus mazos y el estadio. Devu
 
 ---
 
-### `registrar_turno(...)`
-Inserta el registro de un turno completado con vida de ambos jugadores, elemento activo, jugador primero y medias de velocidad. Calcula el maná automáticamente con `calcular_mana`. Devuelve `p_id_turno`.
-
----
-
 ### `registrar_resultado_partida(...)`
 Cierra la partida actualizando `id_ganador` y `num_turnos`. Actualiza el MMR de ambos jugadores:
 - **Ganador**: +100 MMR
@@ -322,9 +250,6 @@ Todas las cartas con el nombre del elemento en lugar del `id_elemento`. Incluye 
 ### `vista_historial_partidas`
 Partidas con apodos de jugadores, nombres de mazos, estadio, número de turnos, ganador y fecha.
 
-### `vista_coleccion_jugador`
-Colección completa de cada jugador con nombre de carta, tipo, elemento, rareza, coste, velocidad y fecha de obtención.
-
 ### `vista_estadisticas_elemento`
 Por cada elemento: total de cartas, desglose por tipo (ofensivas, defensivas, estado), coste medio, velocidad media, daño medio de ofensivas y escudo medio de defensivas.
 
@@ -338,7 +263,7 @@ Por cada elemento: total de cartas, desglose por tipo (ofensivas, defensivas, es
 2. Se llama a crear_partida() → inserta en PARTIDA
    Java resetea ESTADIO.id_elemento_activo = ESTADIO.id_elemento_inicial
         ↓
-3. Por cada turno (simultáneo):
+3. Por cada turno (simultáneo, gestionado en memoria Java):
    - Ambos jugadores seleccionan cartas (máx. 1 min 30 s)
    - Java ordena todas las cartas por velocidad DESC
    - Desempate de velocidad → mayor media_velocidad del jugador ese turno
@@ -346,8 +271,6 @@ Por cada elemento: total de cartas, desglose por tipo (ofensivas, defensivas, es
    - Se resuelven las cartas en orden: ofensivas (daño_real con multiplicador),
      defensivas (escudo), estado (cambia ESTADIO.id_elemento_activo)
    - Java verifica fin de partida: vida_j1 <= 0 o vida_j2 <= 0
-   - Se llama a registrar_turno() → inserta en TURNO
-   - Por cada carta jugada → inserta en TURNO_CARTA
         ↓
 4. Al terminar → se llama a registrar_resultado_partida()
    · Actualiza PARTIDA (id_ganador, num_turnos)
@@ -368,7 +291,7 @@ El script `INSERCION.sql` inicializa únicamente los datos base del sistema:
 | `CARTA` | 56 | Catálogo completo (28 ofensivas, 20 defensivas, 8 estado) |
 | `JUGADOR` | 2 | Jugadores de ejemplo para pruebas |
 
-El resto de datos (colecciones, mazos, partidas, turnos) los genera la propia aplicación en uso.
+El resto de datos (mazos, partidas) los genera la propia aplicación en uso.
 
 ---
 
@@ -405,7 +328,7 @@ Un jugador que ha participado en una `PARTIDA` **no se puede borrar** por el `ON
 ---
 
 ### Borrar cartas del catálogo
-Las cartas jugadas en alguna partida tienen `ON DELETE RESTRICT` en `TURNO_CARTA`. No se pueden eliminar. Si se necesita retirar una carta del juego, la opción más segura es no mostrarla en la interfaz pero mantenerla en la base de datos.
+Las cartas incluidas en algún mazo tienen `ON DELETE RESTRICT` en `MAZO_CARTA`. No se pueden eliminar mientras estén en uso. Si se necesita retirar una carta del juego, la opción más segura es no mostrarla en la interfaz pero mantenerla en la base de datos.
 
 ---
 
@@ -415,12 +338,9 @@ Para volver al estado inicial sin perder la estructura:
 ```sql
 USE juego_cartas;
 SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE TURNO_CARTA;
-TRUNCATE TABLE TURNO;
 TRUNCATE TABLE PARTIDA;
 TRUNCATE TABLE MAZO_CARTA;
 TRUNCATE TABLE MAZO;
-TRUNCATE TABLE CARTA_JUGADOR;
 TRUNCATE TABLE JUGADOR;
 SET FOREIGN_KEY_CHECKS = 1;
 ```

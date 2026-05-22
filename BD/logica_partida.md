@@ -70,23 +70,10 @@ Para cada carta de la lista ordenada:
 - `UPDATE ESTADIO SET id_elemento_activo = carta.id_elemento WHERE id_estadio = ?`
 - Actualizar variable local en Java: `id_elemento_activo = carta.id_elemento`
 
-### 2.5 Fin del turno — guardar en BD
+### 2.5 Fin del turno
 
-1. Llamar a `registrar_turno()` con:
-   - `id_partida`
-   - `numero_turno`
-   - `vida_j1`, `vida_j2`
-   - `id_elemento_activo` actual
-   - `id_jugador_primero`
-   - `media_velocidad_j1`, `media_velocidad_j2`
-   - Devuelve `id_turno`
-
-2. Por cada carta jugada ese turno → insertar en `TURNO_CARTA`:
-   - `id_turno`, `id_jugador`, `id_carta`, `dano_real`, `orden_resolucion`
-
-3. `numero_turno += 1`
-
-4. Volver al paso **2.1**
+1. `numero_turno += 1`
+2. Volver al paso **2.1**
 
 ---
 
@@ -112,4 +99,4 @@ Para cada carta de la lista ordenada:
 | `id_elemento_activo` | Elemento activo del estadio (sincronizado con BD) |
 | `mana_disponible` | Maná del turno actual (calculado con `calcular_mana`) |
 
-> Todo lo demás (historial de cartas, turnos, daños) va a la BD al cerrar cada turno.
+> El estado de la partida se gestiona en memoria durante el juego. Solo se persiste en BD al finalizar la partida completa.

@@ -105,34 +105,6 @@ El juego incorpora un sistema de elementos. Cada carta pertenece a un elemento y
 
 > Relación: **N:1** con Jugador (×3), Mazo (×2), Estadio
 
-### Turno
-| Campo | Tipo | Descripción |
-|---|---|---|
-| id | INT PK | Identificador único |
-| partida_id | INT FK | Partida a la que pertenece |
-| numero_turno | INT | Número de turno global en la partida |
-| vida_j1 | INT | Vida del jugador 1 al final del turno |
-| vida_j2 | INT | Vida del jugador 2 al final del turno |
-| mana_disponible | INT | Mana máximo disponible ese turno |
-| elemento_activo_id | INT FK | Elemento activo del estadio en ese turno |
-| jugador_primero_id | INT FK | Jugador que resolvió primero |
-| media_velocidad_j1 | DECIMAL | Media de velocidad de las cartas del jugador 1 |
-| media_velocidad_j2 | DECIMAL | Media de velocidad de las cartas del jugador 2 |
-
-> Relación: **N:1** con Partida, Elemento, Jugador
-
-### TurnoCarta
-| Campo | Tipo | Descripción |
-|---|---|---|
-| id | INT PK | Identificador único |
-| turno_id | INT FK | Turno al que pertenece |
-| jugador_id | INT FK | Jugador que jugó la carta |
-| carta_id | INT FK | Carta jugada |
-| daño_real | INT | Daño aplicado tras el modificador de elemento |
-| orden_resolucion | INT | Posición en la que se resolvió la carta en el turno |
-
-> Relación: **N:1** con Turno, Jugador, Carta
-
 ---
 
 ## Relaciones entre tablas
@@ -143,19 +115,4 @@ Elemento ←────────── Interaccion_Elemento (atacante y defe
 Elemento ←────────── Estadio (inicial y activo)
 Jugador  ←────────── Mazo ←── Mazo_Carta ──→ Carta
 Jugador  ←────────── Partida ──→ Mazo, Estadio
-Partida  ←────────── Turno ──→ Elemento, Jugador
-Turno    ←────────── TurnoCarta ──→ Jugador, Carta
 ```
-
----
-
-## Procedimientos y Lógica Destacable
-
-| Procedimiento | Descripción |
-|---|---|
-| **Calcular mana por turno** | `mana = numero_turno` (o fórmula definida). Determina el límite de cartas jugables en ese turno |
-| **Resolver orden de cartas** | Ordena todas las cartas del turno por `velocidad` DESC. Desempate 1: media de velocidad del jugador. Desempate 2: Carta con mayor velocidad elegida aleatoriamente. |
-| **Calcular daño real** | Consulta `Interaccion_Elemento` con el elemento de la carta y el elemento activo del estadio para aplicar el multiplicador correspondiente |
-| **Actualizar MMR** | Al finalizar la partida, ajusta el MMR de ganador y perdedor según el resultado |
-| **Verificar fin de partida** | Tras concluir el turno, comprueba si `vida_j1 <= 0` o `vida_j2 <= 0` para determinar si la partida ha terminado |
-| **Tiempo límite de turno** | Cada jugador dispone de 1 minuto y 30 segundos para seleccionar sus cartas antes de que el turno se resuelva automáticamente |
