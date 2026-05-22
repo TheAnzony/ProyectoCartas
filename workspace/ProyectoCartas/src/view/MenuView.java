@@ -94,6 +94,7 @@ public class MenuView extends JPanel implements config {
 
 		JLabel boton = new JLabel(iconoNormal);
 		boton.setBounds(x, y, BTN_ANCHO, BTN_ALTO);
+		boton.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 
 		boton.addMouseListener(new MouseAdapter() {
 			public void mouseEntered(MouseEvent e) {

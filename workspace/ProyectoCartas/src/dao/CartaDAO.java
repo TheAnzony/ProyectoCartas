@@ -211,6 +211,25 @@ public class CartaDAO {
         return false;
     }
 
+    public List<Carta> listarPorMazo(int idMazo) {
+        String sql = "SELECT c.* FROM carta c "
+                   + "INNER JOIN mazo_carta mc ON c.id_carta = mc.id_carta "
+                   + "WHERE mc.id_mazo = ?";
+        List<Carta> lista = new ArrayList<>();
+        try {
+            PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
+            ps.setInt(1, idMazo);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Carta c = construirCarta(rs);
+                if (c != null) lista.add(c);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
     public void mostrarLista() {
         for (Carta carta : listar()) {
             System.out.println(carta);

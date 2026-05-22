@@ -17,6 +17,7 @@ import javax.swing.SwingWorker;
 import controller.MainController;
 import dao.CartaDAO;
 import modulos.Carta;
+import utils.ConstruirCarta;
 import utils.ImageUtils;
 import utils.config;
 
@@ -30,6 +31,7 @@ public class StartView extends JPanel implements config {
 
 		setLayout(null);
 		setPreferredSize(new Dimension(ANCHO, ALTO));
+		ConstruirCarta.ConstruirCartasDefault();
 
 		ImageIcon iconoOriginal = new ImageIcon(START_IMAGE);
 		Image imgEscalada = iconoOriginal.getImage().getScaledInstance(ANCHO, ALTO, Image.SCALE_SMOOTH);
@@ -39,7 +41,7 @@ public class StartView extends JPanel implements config {
 		background.setLayout(null);
 
 		JLabel labelEstado = new JLabel("0%", SwingConstants.CENTER);
-		labelEstado.setBounds(0, ALTO - 60, ANCHO, 40);
+		labelEstado.setBounds(0, ALTO - 100, ANCHO, 40);
 		labelEstado.setFont(new Font("Arial", Font.BOLD, 18));
 		labelEstado.setForeground(Color.WHITE);
 		background.add(labelEstado);
@@ -62,13 +64,26 @@ public class StartView extends JPanel implements config {
 
 			@Override
 			protected Void doInBackground() {
+				
 				CartaDAO dao = new CartaDAO();
 				List<Carta> lista = dao.listar();
 				for (int i = 0; i < lista.size(); i++) {
-					ImageUtils.cargarImagen(CARTAS_DIR + lista.get(i).getImagen(), 200, 280);
+					String img = lista.get(i).getImagen();
+					ImageUtils.cargarImagen(CARTAS_DIR + img, 200, 280);  // CartaView
+					ImageUtils.cargarImagen(CARTAS_DIR + img, 160, 224);  // MazoView carrusel
+					ImageUtils.cargarImagen(CARTAS_DIR + img, 128, 179);  // MazoView slots
 					int porcentaje = (int) ((i + 1) * 100.0 / lista.size());
 					publish(porcentaje);
 				}
+				// Fondos de elemento para carrusel y slots del mazo
+				ImageUtils.cargarImagen(BOX_IMAGE_FUEGO,  160, 224);
+				ImageUtils.cargarImagen(BOX_IMAGE_AGUA,   160, 224);
+				ImageUtils.cargarImagen(BOX_IMAGE_TIERRA, 160, 224);
+				ImageUtils.cargarImagen(BOX_IMAGE_AIRE,   160, 224);
+				ImageUtils.cargarImagen(BOX_IMAGE_FUEGO,  128, 179);
+				ImageUtils.cargarImagen(BOX_IMAGE_AGUA,   128, 179);
+				ImageUtils.cargarImagen(BOX_IMAGE_TIERRA, 128, 179);
+				ImageUtils.cargarImagen(BOX_IMAGE_AIRE,   128, 179);
 				return null;
 			}
 

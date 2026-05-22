@@ -5,15 +5,20 @@ public interface config {
 	int ANCHO = 1440;
 	int ALTO = 810;
 	
-	String FONDOS_DIR = "assets/fondos/";
+	String FONDOS_DIR   = "assets/fondos/";
 	String ELEMENTOS_DIR = "assets/elementos/";
-	String BOTONES_DIR = "assets/botones/";
-	String CARTAS_DIR = "assets/cartas/";
+	String BOTONES_DIR  = "assets/botones/";
+	String CARTAS_DIR   = "assets/cartas/";
+	String FUENTES_DIR  = "assets/fuentes/";
+
+	String FONT_MEDIEVAL = FUENTES_DIR + "CloisterBlack.ttf";
 	
 	String START_IMAGE = FONDOS_DIR+"start.png";
 	String MENU_IMAGE = FONDOS_DIR+"menu.png";
 	String JUGADORES_IMAGE = FONDOS_DIR+"jugadores_menu.png";
 	String CARTAS_IMAGE = FONDOS_DIR+"carta_view.png";
+	String FONDO_DEFAULT = FONDOS_DIR+"fondo_default.png";
+	
 	
 	String BOX_IMAGE_TIERRA = CARTAS_DIR+"marco_carta_tierra.png";
 	String BOX_IMAGE_FUEGO = CARTAS_DIR+"marco_carta_fuego.png";

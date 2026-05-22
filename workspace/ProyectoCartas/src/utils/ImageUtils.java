@@ -1,6 +1,7 @@
 package utils;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -41,6 +42,16 @@ public class ImageUtils implements config {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	public static Font cargarFuente(String ruta, float size) {
+		try {
+			Font f = Font.createFont(Font.TRUETYPE_FONT, new File(ruta));
+			return f.deriveFont(Font.PLAIN, size);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Font("Serif", Font.BOLD, (int) size);
 		}
 	}
 

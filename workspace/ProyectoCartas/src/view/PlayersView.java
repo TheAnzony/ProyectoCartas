@@ -2,20 +2,11 @@ package view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 
-import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -27,9 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import controller.MainController;
-import dao.CartaDAO;
 import dao.JugadorDAO;
-import modulos.Carta;
 import modulos.Jugador;
 import utils.ImageUtils;
 import utils.config;
@@ -69,10 +58,11 @@ public class PlayersView extends JPanel implements config {
 		add(scroll);
 
 		// Botón volver
-		ImageIcon iconoBack = ImageUtils.cargarImagen(ARROW_BACK, 60, 60);
+		ImageIcon iconoBack = ImageUtils.cargarImagen(ARROW_BACK, 50, 50);
 		ImageIcon iconoBackOscuro = ImageUtils.oscurecerImagen(iconoBack);
 		JLabel btnVolver = new JLabel(iconoBack);
-		btnVolver.setBounds(20, 20, 60, 60);
+		btnVolver.setBounds(15, 15, 50, 50);
+		btnVolver.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 		btnVolver.addMouseListener(new MouseAdapter() {
 			public void mouseEntered(MouseEvent e) {
 				btnVolver.setIcon(iconoBackOscuro);
@@ -124,20 +114,29 @@ public class PlayersView extends JPanel implements config {
 	}
 
 	private JLabel crearFilaJugador(Jugador j, ImageIcon iconoCaja, ImageIcon iconoAvatar) {
+		ImageIcon iconoCajaOscura = ImageUtils.oscurecerImagen(iconoCaja);
+
 		JLabel caja = new JLabel(iconoCaja);
 		caja.setLayout(null);
 		caja.setMaximumSize(new Dimension(300, 70));
+		caja.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 
 		JLabel icono = new JLabel(iconoAvatar);
 		icono.setBounds(10, 10, 50, 50);
 
 		JLabel texto = new JLabel(j.getApodo());
 		texto.setForeground(Color.white);
-		texto.setFont(new Font("Arial", Font.BOLD, 16));
+		texto.setFont(ImageUtils.cargarFuente(FONT_MEDIEVAL, 20f));
 		texto.setBounds(70, 20, 400, 30);
 
 		caja.add(texto);
 		caja.add(icono);
+
+		caja.addMouseListener(new MouseAdapter() {
+			@Override public void mouseEntered(MouseEvent e)  { caja.setIcon(iconoCajaOscura); }
+			@Override public void mouseExited(MouseEvent e)   { caja.setIcon(iconoCaja); }
+			@Override public void mouseReleased(MouseEvent e) { controller.lanzarMenuMazo(j); }
+		});
 
 		return caja;
 	}

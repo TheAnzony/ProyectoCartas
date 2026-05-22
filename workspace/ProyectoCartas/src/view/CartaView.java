@@ -25,6 +25,7 @@ import javax.swing.SwingWorker;
 import controller.MainController;
 import dao.CartaDAO;
 import modulos.Carta;
+import utils.ConstruirCarta;
 import utils.ImageUtils;
 import utils.config;
 
@@ -49,16 +50,7 @@ public class CartaView extends JPanel implements config {
 		setLayout(null);
 		setPreferredSize(new Dimension(ANCHO, ALTO));
 
-		ImageIcon cartaFuego = ImageUtils.cargarImagen(BOX_IMAGE_FUEGO, 200, 280);
-		ImageIcon cartaAire = ImageUtils.cargarImagen(BOX_IMAGE_AIRE, 200, 280);
-		ImageIcon cartaTierra = ImageUtils.cargarImagen(BOX_IMAGE_TIERRA, 200, 280);
-		ImageIcon cartaAgua = ImageUtils.cargarImagen(BOX_IMAGE_AGUA, 200, 280);
-
-		ArrayList<ImageIcon> cartasElementos = new ArrayList<ImageIcon>();
-		cartasElementos.add(cartaFuego);
-		cartasElementos.add(cartaAgua);
-		cartasElementos.add(cartaTierra);
-		cartasElementos.add(cartaAire);
+		
 
 		JPanel grid = new JPanel(new GridLayout(0, 5, 10, 10));
 		grid.setOpaque(false);
@@ -74,10 +66,11 @@ public class CartaView extends JPanel implements config {
 		add(scroll);
 
 		// Botón volver
-		ImageIcon iconoBack = ImageUtils.cargarImagen(ARROW_BACK, 60, 60);
+		ImageIcon iconoBack = ImageUtils.cargarImagen(ARROW_BACK, 50, 50);
 		ImageIcon iconoBackOscuro = ImageUtils.oscurecerImagen(iconoBack);
 		JLabel btnVolver = new JLabel(iconoBack);
-		btnVolver.setBounds(20, 20, 60, 60);
+		btnVolver.setBounds(15, 15, 50, 50);
+		btnVolver.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
 		btnVolver.addMouseListener(new MouseAdapter() {
 			public void mouseEntered(MouseEvent e) {
 				btnVolver.setIcon(iconoBackOscuro);
@@ -98,6 +91,8 @@ public class CartaView extends JPanel implements config {
 		fondo.setBounds(0, 0, ANCHO, ALTO);
 		add(fondo);
 
+		ConstruirCarta.ConstruirCartasDefault();
+
 		new SwingWorker<List<Carta>, Void>() {
 			@Override
 			protected List<Carta> doInBackground() throws Exception {
@@ -117,7 +112,7 @@ public class CartaView extends JPanel implements config {
 					List<Carta> cartas = get();
 
 					for (Carta carta : cartas) {
-						grid.add(insertarCarta(carta, cartasElementos));
+						grid.add(ConstruirCarta.insertarCarta(carta));
 					}
 					grid.revalidate();
 					grid.repaint();
@@ -130,62 +125,6 @@ public class CartaView extends JPanel implements config {
 
 	}
 
-	public JLabel insertarCarta(Carta c, ArrayList<ImageIcon> elementos) {
-
-		// Imagen individual de la carta si existe, si no usa la del elemento
-		ImageIcon fondoCarta = ImageUtils.cargarImagen(CARTAS_DIR + c.getImagen(), 200, 280);
-
-		JLabel titulo = new JLabel(c.getNombre(), JLabel.CENTER);
-		JTextArea descripcion = new JTextArea(c.getDescripcion());
-
-		if (fondoCarta == null) {
-
-			// Título centrado — ocupa todo el ancho y alinea el texto al centro
-			titulo.setForeground(Color.white);
-			titulo.setFont(new Font("Arial", Font.BOLD, 15));
-			titulo.setBounds(0, 50, 200, 25);
-
-			descripcion.setLineWrap(true);
-			descripcion.setWrapStyleWord(true);
-			descripcion.setOpaque(false);
-			descripcion.setEditable(false);
-			descripcion.setForeground(Color.white);
-			descripcion.setFont(new Font("Arial", Font.PLAIN, 14));
-			descripcion.setBounds(20, 120, 160, 130);
-
-			fondoCarta = elementos.get(c.getId_elemento() - 1);
-		}
-
-		String danoAux = c.getDano() + "";
-		JLabel dano = new JLabel(danoAux);
-		dano.setForeground(Color.white);
-		dano.setFont(new Font("Arial", Font.BOLD, 14));
-		dano.setBounds(23, 240, 20, 25);
-
-		String veloAux = c.getVelocidad() + "";
-		JLabel velocidad = new JLabel(veloAux);
-		velocidad.setForeground(Color.white);
-		velocidad.setFont(new Font("Arial", Font.BOLD, 16));
-		velocidad.setBounds(200 - 31, 13, 20, 25);
-
-		// Número de maná encima de la gota (esquina inferior izquierda)
-		JLabel mana = new JLabel(String.valueOf(c.getCoste_mana()), JLabel.CENTER);
-		mana.setForeground(Color.white);
-		mana.setFont(new Font("Arial", Font.BOLD, 15));
-		mana.setBounds(200 - 39, 240, 30, 25);
-
-		JLabel caja = new JLabel(fondoCarta);
-		caja.setLayout(null);
-		caja.setMaximumSize(new Dimension(200, 280));
-
-		caja.add(titulo);
-		caja.add(descripcion);
-		caja.add(dano);
-		caja.add(velocidad);
-		caja.add(mana);
-
-		return caja;
-
-	}
+	
 
 }

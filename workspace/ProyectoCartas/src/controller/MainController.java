@@ -9,8 +9,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import modulos.Jugador;
 import utils.config;
 import view.CartaView;
+import view.MazoView;
 import view.MenuView;
 import view.PlayersView;
 import view.StartView;
@@ -53,6 +55,11 @@ public class MainController implements config {
 	public void lanzarMenuCartas() {
 
 		cambiarPantalla(new CartaView(this));
+	}
+
+	public void lanzarMenuMazo(Jugador j) {
+
+		cambiarPantalla(new MazoView(this, j));
 	}
 
 	private void cambiarPantalla(JPanel nuevaPantalla) {
