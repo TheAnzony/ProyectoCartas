@@ -21,16 +21,31 @@ import controller.MainController;
 import utils.ImageUtils;
 import utils.config;
 
+/**
+ * Pantalla del menú principal del juego.
+ * Muestra cinco botones de imagen (Iniciar Partida, Jugadores, Cartas, Historial y Salir)
+ * centrados verticalmente sobre el fondo del menú.
+ */
 public class MenuView extends JPanel implements config {
 
 	private MainController controller;
 
+	/** Ancho de cada botón del menú en píxeles. */
 	private static final int BTN_ANCHO = 300;
-	private static final int BTN_ALTO = 80;
-	private static final int BTN_X = (ANCHO - BTN_ANCHO) / 2;
-	private static final int BTN_GAP = 10;
-	private static final int BTN_INICIO = 280; // centrado automático
+	/** Alto de cada botón del menú en píxeles. */
+	private static final int BTN_ALTO  = 80;
+	/** Coordenada X de todos los botones (centrados horizontalmente). */
+	private static final int BTN_X     = (ANCHO - BTN_ANCHO) / 2;
+	/** Separación vertical entre botones en píxeles. */
+	private static final int BTN_GAP   = 10;
+	/** Coordenada Y del primer botón. */
+	private static final int BTN_INICIO = 280;
 
+	/**
+	 * Construye el menú principal con todos sus botones y el fondo.
+	 *
+	 * @param c Controlador principal de la aplicación.
+	 */
 	public MenuView(MainController c) {
 		this.controller = c;
 
@@ -60,6 +75,11 @@ public class MenuView extends JPanel implements config {
 		});
 
 		JLabel btnHistorial = crearBoton(BTN_HISTORIAL, BTN_X, BTN_INICIO + (BTN_ALTO + BTN_GAP) * 3);
+		btnHistorial.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				controller.lanzarHistorial();
+			}
+		});
 
 		JLabel btnSalir = crearBoton(BTN_SALIR, BTN_X, BTN_INICIO + (BTN_ALTO + BTN_GAP) * 4);
 		btnSalir.addMouseListener(new MouseAdapter() {
@@ -88,6 +108,14 @@ public class MenuView extends JPanel implements config {
 		add(fondo);
 	}
 
+	/**
+	 * Crea un botón de imagen con efecto de oscurecimiento al pasar el ratón.
+	 *
+	 * @param ruta Ruta al fichero de imagen del botón.
+	 * @param x    Posición horizontal del botón.
+	 * @param y    Posición vertical del botón.
+	 * @return {@link JLabel} configurado como botón interactivo.
+	 */
 	private JLabel crearBoton(String ruta, int x, int y) {
 		ImageIcon iconoNormal = ImageUtils.cargarImagen(ruta, BTN_ANCHO, BTN_ALTO);
 		ImageIcon iconoOscurecido = ImageUtils.oscurecerImagen(iconoNormal);

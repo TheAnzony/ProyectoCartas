@@ -39,13 +39,21 @@ JPanel grid = new JPanel(new GridLayout(0, 4, 10, 10));
 JScrollPane scroll = new JScrollPane(grid);
 scroll.setBounds((ANCHO - 830) / 2, 180, 830, 570);
  */
+/**
+ * Pantalla del catálogo de cartas.
+ * Muestra todas las cartas disponibles en la base de datos en una cuadrícula
+ * de 5 columnas con scroll vertical. Las imágenes se precargan en background.
+ */
 public class CartaView extends JPanel implements config {
 
 	MainController controller;
 
+	/**
+	 * Construye la vista del catálogo y lanza la carga de cartas en background.
+	 *
+	 * @param c Controlador principal de la aplicación.
+	 */
 	public CartaView(MainController c) {
-		// TODO Auto-generated constructor stub
-
 		this.controller = c;
 		setLayout(null);
 		setPreferredSize(new Dimension(ANCHO, ALTO));

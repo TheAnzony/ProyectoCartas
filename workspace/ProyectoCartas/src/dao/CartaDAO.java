@@ -211,6 +211,12 @@ public class CartaDAO {
         return false;
     }
 
+    /**
+     * Recupera todas las cartas que pertenecen a un mazo concreto.
+     *
+     * @param idMazo Identificador del mazo.
+     * @return Lista de {@link Carta} del mazo. Vacía si el mazo no tiene cartas.
+     */
     public List<Carta> listarPorMazo(int idMazo) {
         String sql = "SELECT c.* FROM carta c "
                    + "INNER JOIN mazo_carta mc ON c.id_carta = mc.id_carta "
@@ -230,6 +236,9 @@ public class CartaDAO {
         return lista;
     }
 
+    /**
+     * Imprime por consola todas las cartas de la base de datos. Método de utilidad para depuración.
+     */
     public void mostrarLista() {
         for (Carta carta : listar()) {
             System.out.println(carta);

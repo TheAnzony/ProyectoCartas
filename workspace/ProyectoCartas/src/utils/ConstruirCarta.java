@@ -11,10 +11,20 @@ import javax.swing.JTextArea;
 
 import modulos.Carta;
 
+/**
+ * Utilidad estática para construir componentes Swing que representan cartas visualmente.
+ * Genera un {@link javax.swing.JLabel} con el marco de elemento correcto, el nombre,
+ * la descripción, la velocidad, el coste de maná y la estadística principal de la carta.
+ */
 public class ConstruirCarta implements config {
 
+	/** Imágenes de marco por defecto indexadas por elemento (Fuego, Agua, Tierra, Aire). */
 	static ArrayList<ImageIcon> cartasDefault;
 
+	/**
+	 * Precarga en caché los cuatro marcos de elemento por defecto a tamaño 200×280.
+	 * Debe llamarse una vez al inicio de la aplicación (en {@link view.StartView}).
+	 */
 	public static void ConstruirCartasDefault() {
 
 		ImageIcon cartaFuego = ImageUtils.cargarImagen(BOX_IMAGE_FUEGO, 200, 280);
@@ -30,10 +40,26 @@ public class ConstruirCarta implements config {
 		
 	}
 
+	/**
+	 * Construye el componente visual de una carta a tamaño estándar (200×280 px).
+	 *
+	 * @param c Carta a representar.
+	 * @return {@link javax.swing.JLabel} con el layout completo de la carta.
+	 */
 	public static JLabel insertarCarta(Carta c) {
 		return insertarCarta(c, 200, 280);
 	}
 
+	/**
+	 * Construye el componente visual de una carta a las dimensiones indicadas.
+	 * Escala proporcionalmente todos los textos e iconos internos.
+	 * Si la carta no tiene imagen propia se usa el marco de su elemento.
+	 *
+	 * @param c Carta a representar.
+	 * @param w Ancho deseado en píxeles.
+	 * @param h Alto deseado en píxeles.
+	 * @return {@link javax.swing.JLabel} con el layout completo de la carta.
+	 */
 	public static JLabel insertarCarta(Carta c, int w, int h) {
 
 		double rw = w / 200.0;
@@ -62,11 +88,6 @@ public class ConstruirCarta implements config {
 			fondoCarta = ImageUtils.cargarImagen(getElementoRuta(c.getId_elemento()), w, h);
 		}
 
-		JLabel dano = new JLabel(c.getDano() + "");
-		dano.setForeground(Color.white);
-		dano.setFont(new Font("Arial", Font.BOLD, (int)(14 * rw)));
-		dano.setBounds((int)(23 * rw), (int)(240 * rh), (int)(20 * rw), (int)(25 * rh));
-
 		JLabel velocidad = new JLabel(c.getVelocidad() + "");
 		velocidad.setForeground(Color.white);
 		velocidad.setFont(new Font("Arial", Font.BOLD, (int)(16 * rw)));
@@ -83,13 +104,33 @@ public class ConstruirCarta implements config {
 
 		caja.add(titulo);
 		caja.add(descripcion);
-		caja.add(dano);
 		caja.add(velocidad);
 		caja.add(mana);
+
+		String tipo = c.getTipo();
+		if ("OFENSIVA".equals(tipo)) {
+			JLabel stat = new JLabel(c.getDano() + "");
+			stat.setForeground(Color.white);
+			stat.setFont(new Font("Arial", Font.BOLD, (int)(14 * rw)));
+			stat.setBounds((int)(23 * rw), (int)(240 * rh), (int)(20 * rw), (int)(25 * rh));
+			caja.add(stat);
+		} else if ("DEFENSIVA".equals(tipo)) {
+			JLabel stat = new JLabel(c.getEscudo() + "");
+			stat.setForeground(new Color(100, 180, 255));
+			stat.setFont(new Font("Arial", Font.BOLD, (int)(14 * rw)));
+			stat.setBounds((int)(23 * rw), (int)(240 * rh), (int)(20 * rw), (int)(25 * rh));
+			caja.add(stat);
+		}
 
 		return caja;
 	}
 
+	/**
+	 * Devuelve la ruta al marco de carta correspondiente a un elemento dado.
+	 *
+	 * @param id Identificador del elemento (1=Fuego, 2=Agua, 3=Tierra, 4=Aire).
+	 * @return Ruta al fichero de imagen del marco.
+	 */
 	private static String getElementoRuta(int id) {
 		switch (id) {
 			case 1:  return BOX_IMAGE_FUEGO;

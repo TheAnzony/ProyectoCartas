@@ -36,27 +36,55 @@ import utils.ConstruirCarta;
 import utils.ImageUtils;
 import utils.config;
 
+/**
+ * Pantalla de edición del mazo de un jugador.
+ * Muestra 10 slots en la parte superior con las cartas actuales del mazo,
+ * y en la parte inferior un grid con todas las cartas disponibles.
+ * Hacer clic en una carta del grid la añade al primer slot libre;
+ * hacer clic en un slot lleno elimina esa carta del mazo.
+ * Si el jugador no tiene mazo, se crea uno vacío automáticamente.
+ */
 public class MazoView extends JPanel implements config {
 
+	/** Número máximo de cartas por mazo. */
 	private static final int NUM_SLOTS = 10;
-	private static final int SLOT_W = 128;
-	private static final int SLOT_H = 179;
-	private static final int SLOT_GAP = 8;
-	private static final int SLOT_Y = 80;
-	private static final int GRID_Y = SLOT_Y + SLOT_H + 20;
+	/** Ancho de cada slot de carta en la parte superior. */
+	private static final int SLOT_W    = 128;
+	/** Alto de cada slot de carta en la parte superior. */
+	private static final int SLOT_H    = 179;
+	/** Separación horizontal entre slots. */
+	private static final int SLOT_GAP  = 8;
+	/** Posición vertical de la fila de slots. */
+	private static final int SLOT_Y    = 80;
+	/** Posición vertical del grid de selección de cartas. */
+	private static final int GRID_Y    = SLOT_Y + SLOT_H + 20;
 
+	/** Ancho de las cartas en el grid de selección. */
 	private static final int CARD_W = 160;
+	/** Alto de las cartas en el grid de selección. */
 	private static final int CARD_H = 224;
 
 	private MainController controller;
 	private Jugador jugador;
+	/** Mazo activo del jugador que se está editando. */
 	private Mazo mazoActual;
 
+	/** Cartas actualmente asignadas a cada slot (null = slot vacío). */
 	private final Carta[] slotCards = new Carta[NUM_SLOTS];
+	/** Paneles de slot correspondientes a cada posición del mazo. */
 	private final JPanel[] slots = new JPanel[NUM_SLOTS];
+	/** Estado de sombreado de cada carta del grid: {@code true} = ya está en el mazo. */
 	private final Map<Integer, boolean[]> shadingState = new HashMap<>();
+	/** Paneles wrapper de cada carta en el grid, indexados por {@code id_carta}. */
 	private final Map<Integer, JPanel> gridWrappers = new HashMap<>();
 
+	/**
+	 * Construye el editor de mazo para el jugador indicado.
+	 * La carga de datos (mazo y cartas) se realiza en background.
+	 *
+	 * @param c Controlador principal de la aplicación.
+	 * @param j Jugador cuyo mazo se va a editar.
+	 */
 	public MazoView(MainController c, Jugador j) {
 		this.controller = c;
 		this.jugador = j;
@@ -228,7 +256,12 @@ public class MazoView extends JPanel implements config {
 		}.execute();
 	}
 
-	// ── Slot vacío con borde punteado ─────────────────────────────────────
+	/**
+	 * Crea un panel placeholder (slot vacío) con fondo oscuro semitransparente,
+	 * borde punteado blanco y un símbolo {@code +} centrado.
+	 *
+	 * @return Panel listo para añadir a un slot vacío.
+	 */
 	private JPanel crearPlaceholder() {
 		JPanel ph = new JPanel() {
 			@Override
@@ -255,7 +288,13 @@ public class MazoView extends JPanel implements config {
 		return ph;
 	}
 
-	// ── Rellena un slot con la carta completa (imagen + stats) ──────────────
+	/**
+	 * Rellena el slot {@code idx} con el componente visual de la carta dada.
+	 * Añade el listener para eliminarla al hacer clic.
+	 *
+	 * @param idx   Índice del slot (0–9).
+	 * @param carta Carta a mostrar en el slot.
+	 */
 	private void rellenarSlot(int idx, Carta carta) {
 		JPanel slot = slots[idx];
 		slot.removeAll();
@@ -279,7 +318,11 @@ public class MazoView extends JPanel implements config {
 		slot.repaint();
 	}
 
-	// ── Vacía un slot mostrando el placeholder ────────────────────────────
+	/**
+	 * Vacía el slot {@code idx} reemplazándolo por un placeholder.
+	 *
+	 * @param idx Índice del slot a vaciar (0–9).
+	 */
 	private void vaciarSlot(int idx) {
 		JPanel slot = slots[idx];
 		slot.removeAll();
@@ -291,7 +334,12 @@ public class MazoView extends JPanel implements config {
 		slot.repaint();
 	}
 
-	// ── Añade carta al mazo desde el grid ────────────────────────────────
+	/**
+	 * Añade la carta seleccionada al primer slot libre del mazo y la persiste en la base de datos.
+	 * Si la carta ya está en el mazo o el mazo está lleno (10 cartas), no hace nada.
+	 *
+	 * @param carta Carta a añadir al mazo.
+	 */
 	private void añadirCartaAlMazo(Carta carta) {
 		boolean[] shaded = shadingState.get(carta.getId_carta());
 		if (shaded != null && shaded[0])
@@ -320,7 +368,12 @@ public class MazoView extends JPanel implements config {
 		}
 	}
 
-	// ── Elimina carta del slot y la devuelve al estado disponible ─────────
+	/**
+	 * Elimina la carta del slot {@code idx}, la borra de la base de datos y la vuelve
+	 * a marcar como disponible (sin sombreado) en el grid de selección.
+	 *
+	 * @param idx Índice del slot cuya carta se va a eliminar (0–9).
+	 */
 	private void eliminarCartaDeSlot(int idx) {
 		Carta carta = slotCards[idx];
 		if (carta == null)

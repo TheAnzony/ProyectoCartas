@@ -101,21 +101,7 @@ CREATE TABLE JUGADOR (
 
 
 -- ============================================================
---  6. CARTA_JUGADOR
---  Colección de cartas que posee cada jugador.
--- ============================================================
-CREATE TABLE CARTA_JUGADOR (
-    id_jugador      INT  NOT NULL,
-    id_carta        INT  NOT NULL,
-    fecha_obtencion DATE NOT NULL,
-    PRIMARY KEY (id_jugador, id_carta),
-    FOREIGN KEY (id_jugador) REFERENCES JUGADOR(id_jugador) ON DELETE CASCADE,
-    FOREIGN KEY (id_carta)   REFERENCES CARTA(id_carta)     ON DELETE RESTRICT
-);
-
-
--- ============================================================
---  7. MAZO
+--  6. MAZO
 --  Límite de 10 cartas por mazo gestionado desde Java.
 -- ============================================================
 CREATE TABLE MAZO (
@@ -128,7 +114,7 @@ CREATE TABLE MAZO (
 
 
 -- ============================================================
---  8. MAZO_CARTA
+--  7. MAZO_CARTA
 -- ============================================================
 CREATE TABLE MAZO_CARTA (
     id_mazo   INT NOT NULL,
@@ -140,7 +126,7 @@ CREATE TABLE MAZO_CARTA (
 
 
 -- ============================================================
---  9. PARTIDA
+--  8. PARTIDA
 -- ============================================================
 CREATE TABLE PARTIDA (
     id_partida  INT      NOT NULL AUTO_INCREMENT,
@@ -159,52 +145,4 @@ CREATE TABLE PARTIDA (
     FOREIGN KEY (id_mazo_j2)  REFERENCES MAZO(id_mazo)        ON DELETE RESTRICT,
     FOREIGN KEY (id_estadio)  REFERENCES ESTADIO(id_estadio)  ON DELETE RESTRICT,
     FOREIGN KEY (id_ganador)  REFERENCES JUGADOR(id_jugador)  ON DELETE RESTRICT
-);
-
-
--- ============================================================
---  10. TURNO
---  Turnos simultáneos: ambos jugadores eligen cartas y se
---  resuelven ordenadas por velocidad individual.
---  id_jugador_primero: jugador con mayor media de velocidad
---  ese turno (desempate: MMR del jugador).
---  id_elemento_activo: elemento del estadio al cierre del turno.
--- ============================================================
-CREATE TABLE TURNO (
-    id_turno             INT          NOT NULL AUTO_INCREMENT,
-    id_partida           INT          NOT NULL,
-    numero_turno         INT          NOT NULL,
-    vida_j1              INT          NOT NULL,
-    vida_j2              INT          NOT NULL,
-    mana_disponible      INT          NOT NULL,
-    id_elemento_activo   INT          NOT NULL,
-    id_jugador_primero   INT          NOT NULL,
-    media_velocidad_j1   DECIMAL(5,2) NOT NULL DEFAULT 0.00,
-    media_velocidad_j2   DECIMAL(5,2) NOT NULL DEFAULT 0.00,
-    PRIMARY KEY (id_turno),
-    FOREIGN KEY (id_partida)         REFERENCES PARTIDA(id_partida)   ON DELETE CASCADE,
-    FOREIGN KEY (id_elemento_activo) REFERENCES ELEMENTO(id_elemento) ON DELETE RESTRICT,
-    FOREIGN KEY (id_jugador_primero) REFERENCES JUGADOR(id_jugador)   ON DELETE RESTRICT
-);
-
-
--- ============================================================
---  11. TURNO_CARTA
---  Registro de cada carta jugada en un turno.
---  orden_resolucion: posición en la que se resolvió la carta
---  dentro del turno (ordenado por velocidad DESC).
---  daño_real: daño final aplicado tras el multiplicador
---  de interacción de elementos.
--- ============================================================
-CREATE TABLE TURNO_CARTA (
-    id_turno_carta   INT NOT NULL AUTO_INCREMENT,
-    id_turno         INT NOT NULL,
-    id_jugador       INT NOT NULL,
-    id_carta         INT NOT NULL,
-    daño_real        INT NOT NULL DEFAULT 0,
-    orden_resolucion INT NOT NULL,
-    PRIMARY KEY (id_turno_carta),
-    FOREIGN KEY (id_turno)   REFERENCES TURNO(id_turno)     ON DELETE CASCADE,
-    FOREIGN KEY (id_jugador) REFERENCES JUGADOR(id_jugador)  ON DELETE RESTRICT,
-    FOREIGN KEY (id_carta)   REFERENCES CARTA(id_carta)      ON DELETE RESTRICT
 );

@@ -21,11 +21,24 @@ import utils.ConstruirCarta;
 import utils.ImageUtils;
 import utils.config;
 
+/**
+ * Pantalla de carga inicial de la aplicación.
+ * Precarga en caché todas las imágenes de cartas (en varios tamaños) y los marcos
+ * de elemento mientras muestra el porcentaje de progreso. Al terminar, indica
+ * al usuario que pulse cualquier tecla para continuar al menú principal.
+ */
 public class StartView extends JPanel implements config {
 
 	private MainController controller;
+	/** Indica si la precarga de imágenes ha finalizado y se puede pasar al menú. */
 	private boolean cargado = false;
 
+	/**
+	 * Construye la pantalla de carga, inicia la precarga de imágenes en background
+	 * y configura el listener de teclado para avanzar al menú principal.
+	 *
+	 * @param c Controlador principal de la aplicación.
+	 */
 	public StartView(MainController c) {
 		this.controller = c;
 
@@ -41,8 +54,8 @@ public class StartView extends JPanel implements config {
 		background.setLayout(null);
 
 		JLabel labelEstado = new JLabel("0%", SwingConstants.CENTER);
-		labelEstado.setBounds(0, ALTO - 100, ANCHO, 40);
-		labelEstado.setFont(new Font("Arial", Font.BOLD, 18));
+		labelEstado.setBounds(0, ALTO - 110, ANCHO, 60);
+		labelEstado.setFont(new Font("Arial", Font.BOLD, 32));
 		labelEstado.setForeground(Color.WHITE);
 		background.add(labelEstado);
 

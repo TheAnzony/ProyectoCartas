@@ -13,10 +13,24 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+/**
+ * Utilidad estática para carga, escalado y procesado de imágenes en la interfaz gráfica.
+ * Mantiene una caché interna por ruta+dimensiones para evitar recargas innecesarias.
+ */
 public class ImageUtils implements config {
 
+	/** Caché de imágenes indexada por {@code "ruta_ANCHOxALTO"}. */
 	private static final Map<String, ImageIcon> cache = new HashMap<>();
 
+	/**
+	 * Carga una imagen desde disco, la escala a las dimensiones indicadas y la almacena en caché.
+	 * Si la imagen ya fue cargada con las mismas dimensiones, la devuelve directamente desde caché.
+	 *
+	 * @param ruta  Ruta al fichero de imagen.
+	 * @param ancho Ancho deseado en píxeles.
+	 * @param alto  Alto deseado en píxeles.
+	 * @return {@link ImageIcon} escalado, o {@code null} si el fichero no existe o falla la lectura.
+	 */
 	public static ImageIcon cargarImagen(String ruta, int ancho, int alto) {
 		String key = ruta + "_" + ancho + "x" + alto;
 
@@ -45,6 +59,14 @@ public class ImageUtils implements config {
 		}
 	}
 
+	/**
+	 * Carga una fuente TrueType desde disco y la deriva al tamaño indicado.
+	 * Si falla la carga, devuelve una fuente Serif de respaldo.
+	 *
+	 * @param ruta Ruta al fichero {@code .ttf}.
+	 * @param size Tamaño de la fuente en puntos.
+	 * @return {@link Font} cargada a partir del fichero, o una fuente de respaldo si hay error.
+	 */
 	public static Font cargarFuente(String ruta, float size) {
 		try {
 			Font f = Font.createFont(Font.TRUETYPE_FONT, new File(ruta));
@@ -55,6 +77,12 @@ public class ImageUtils implements config {
 		}
 	}
 
+	/**
+	 * Aplica una capa negra semitransparente sobre un {@link ImageIcon} para el efecto hover de botones.
+	 *
+	 * @param icono Imagen original.
+	 * @return Nueva imagen oscurecida (el original no se modifica).
+	 */
 	public static ImageIcon oscurecerImagen(ImageIcon icono) {
 		BufferedImage original = new BufferedImage(icono.getIconWidth(), icono.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2d = original.createGraphics();

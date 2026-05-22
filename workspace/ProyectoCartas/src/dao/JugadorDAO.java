@@ -1,5 +1,6 @@
 package dao;
 
+import conexion.ConexionBD;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,7 +8,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import conexion.ConexionBD;
 import modulos.Jugador;
 
 /**
@@ -178,6 +178,11 @@ public class JugadorDAO {
         return false;
     }
 
+    /**
+     * Imprime por consola todos los jugadores de la lista. Método de utilidad para depuración.
+     *
+     * @param lista Lista de {@link Jugador} a imprimir.
+     */
     public void mostrarLista(List<Jugador> lista) {
         for (Jugador j : lista) {
             System.out.println(j);

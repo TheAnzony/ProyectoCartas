@@ -1,271 +1,289 @@
 package view;
 
+import controller.MainController;
+import dao.JugadorDAO;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-
-import controller.MainController;
-import dao.JugadorDAO;
+import javax.swing.SwingWorker;
 import modulos.Jugador;
 import utils.ImageUtils;
 import utils.config;
 
+/**
+ * Pantalla de gestión de jugadores.
+ * Muestra la lista de jugadores en una cuadrícula de 2 columnas con scroll,
+ * y tres botones de imagen en la parte inferior para añadir, eliminar y modificar jugadores.
+ * Al hacer clic en un jugador se navega a su editor de mazo ({@link MazoView}).
+ */
 public class PlayersView extends JPanel implements config {
 
-	private MainController controller;
+	private final MainController controller;
 
-	private static final int BTN_ANCHO = 300;
-	private static final int BTN_ALTO = 80;
-	private static final int BTN_X = (ANCHO - BTN_ANCHO) / 2;
-	private static final int BTN_GAP = 10;
-	private static final int BTN_INICIO = 280; // centrado automático
+	private static final int CARD_W     = 200;
+	private static final int CARD_H     = 75;
+	private static final int CARD_GAP_H = 20;
+	private static final int CARD_GAP_V = 10;
+	private static final int GRID_COLS  = 2;
+	private static final int GRID_W     = GRID_COLS * CARD_W + (GRID_COLS - 1) * CARD_GAP_H;
+	private static final int GRID_X     = (ANCHO - GRID_W) / 2;
+	private static final int GRID_Y     = 165;
+	private static final int BTN_W      = 300;
+	private static final int BTN_H_IMG  = 165;
+	private static final int BTN_GAP    = 20;
+	private static final int BTN_Y      = ALTO - BTN_H_IMG - 55;
+	private static final int GRID_H     = BTN_Y - GRID_Y - 15;
 
+	/**
+	 * Construye la vista de jugadores con lista, botones de acción y fondo.
+	 * La carga de jugadores desde la base de datos se realiza en background.
+	 *
+	 * @param c Controlador principal de la aplicación.
+	 */
 	public PlayersView(MainController c) {
 		this.controller = c;
 		setLayout(null);
 		setPreferredSize(new Dimension(ANCHO, ALTO));
 
-		// Cargar imágenes reutilizables UNA sola vez
-		ImageIcon iconoCaja = ImageUtils.cargarImagen(BOX_IMAGE, 300, 70);
-		ImageIcon iconoAvatar = ImageUtils.cargarImagen(ICONO_LIST, 50, 50);
+		ImageIcon iconoCaja   = ImageUtils.cargarImagen(BOX_IMAGE, CARD_W, CARD_H - 5);
+		ImageIcon iconoAvatar = ImageUtils.cargarImagen(ICONO_LIST, 45, 45);
 
-		// Panel que contiene la lista de jugadores
-		JPanel lista = new JPanel();
-		lista.setLayout(new BoxLayout(lista, BoxLayout.Y_AXIS));
+		// ── Lista de jugadores (grid 2 columnas, centrado) ────────────────────
+		JPanel lista = new JPanel(null);
 		lista.setOpaque(false);
 
 		JScrollPane scroll = new JScrollPane(lista);
-		scroll.setBounds((ANCHO - 600) / 2, 280, 300, 500);
+		scroll.setBounds(GRID_X, GRID_Y, GRID_W, GRID_H);
 		scroll.setOpaque(false);
 		scroll.getViewport().setOpaque(false);
 		scroll.setBorder(null);
-		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scroll.getVerticalScrollBar().setUnitIncrement(8);
 		add(scroll);
 
-		// Botón volver
+		// ── Título ────────────────────────────────────────────────────────────
+		JLabel titulo = new JLabel("Jugadores", JLabel.CENTER);
+		titulo.setBounds(0, GRID_Y - 130, ANCHO, 75);
+		titulo.setForeground(new Color(255, 195, 30));
+		titulo.setFont(ImageUtils.cargarFuente(FONT_MEDIEVAL, 82f));
+		add(titulo);
+
+		// ── Botones de acción (imagen, fila horizontal, parte inferior) ───────
+		int totalBtnsW = 3 * BTN_W + 2 * BTN_GAP;
+		int btnStartX  = (ANCHO - totalBtnsW) / 2;
+
+		add(crearBotonImagen(BTN_ANADIR_JUGADOR,    btnStartX,                        BTN_Y, this::accionAnadir));
+		add(crearBotonImagen(BTN_ELIMINAR_JUGADOR,  btnStartX + BTN_W + BTN_GAP,      BTN_Y, this::accionEliminar));
+		add(crearBotonImagen(BTN_MODIFICAR_JUGADOR, btnStartX + 2 * (BTN_W + BTN_GAP), BTN_Y, this::accionActualizar));
+
+		// ── Botón volver ──────────────────────────────────────────────────────
 		ImageIcon iconoBack = ImageUtils.cargarImagen(ARROW_BACK, 50, 50);
-		ImageIcon iconoBackOscuro = ImageUtils.oscurecerImagen(iconoBack);
+		ImageIcon iconoBackOsc = ImageUtils.oscurecerImagen(iconoBack);
 		JLabel btnVolver = new JLabel(iconoBack);
 		btnVolver.setBounds(15, 15, 50, 50);
-		btnVolver.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+		btnVolver.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		btnVolver.addMouseListener(new MouseAdapter() {
-			public void mouseEntered(MouseEvent e) {
-				btnVolver.setIcon(iconoBackOscuro);
-			}
-
-			public void mouseExited(MouseEvent e) {
-				btnVolver.setIcon(iconoBack);
-			}
-
-			public void mouseClicked(MouseEvent e) {
-				controller.lanzarMenuPrincipal();
-			}
+			@Override public void mouseEntered(MouseEvent e) { btnVolver.setIcon(iconoBackOsc); }
+			@Override public void mouseExited(MouseEvent e)  { btnVolver.setIcon(iconoBack); }
+			@Override public void mouseClicked(MouseEvent e) { controller.lanzarMenuPrincipal(); }
 		});
 		add(btnVolver);
-		
-		// 1. AÑADIMOS TODOS LOS BOTONES DE ACCIÓN PRINCIPALES
-		add(botonAnadirJugador(iconoBackOscuro, ANCHO - 600, (ALTO / 2) - 60, 150, 60));
-		add(botonEliminarJugador(iconoBackOscuro, ANCHO - 600, (ALTO / 2) + 20, 150, 60));
-		
-		// AQUÍ ESTÁ LA SOLUCIÓN: Añadimos el botón de actualizar debajo del de eliminar (+80px en Y)
-		add(botonActualizarJugador(iconoBackOscuro, ANCHO - 600, (ALTO / 2) + 100, 150, 60));
 
-		// 2. EL FONDO SE AÑADE SIEMPRE AL FINAL
-		// En Absolute Layout (null), lo último que agregas se dibuja al fondo (capa inferior)
-		JLabel fondo = new JLabel(ImageUtils.cargarImagen(JUGADORES_IMAGE, ANCHO, ALTO));
+
+		// CAPA QUE OSCURECE EL FONDO
+		JPanel oscurece = new JPanel();
+		oscurece.setBackground(new Color(0, 0, 0, 90));
+		oscurece.setOpaque(true);
+		oscurece.setBounds(0, 0, ANCHO, ALTO);
+		add(oscurece);
+
+		// ── Fondo ─────────────────────────────────────────────────────────────
+		JLabel fondo = new JLabel(ImageUtils.cargarImagen(FONDO_DEFAULT, ANCHO, ALTO));
 		fondo.setBounds(0, 0, ANCHO, ALTO);
 		add(fondo);
 
-		// Solo la consulta BD en hilo de fondo
-		new javax.swing.SwingWorker<List<Jugador>, Void>() {
-
-			@Override
-			protected List<Jugador> doInBackground() {
+		// ── Carga jugadores en background ─────────────────────────────────────
+		new SwingWorker<List<Jugador>, Void>() {
+			@Override protected List<Jugador> doInBackground() {
 				return new JugadorDAO().listar();
 			}
-
-			@Override
-			protected void done() {
+			@Override protected void done() {
 				try {
-					List<Jugador> cartas = get();
-
-					for (Jugador j : cartas) {
-						lista.add(crearFilaJugador(j, iconoCaja, iconoAvatar));
-						lista.add(Box.createVerticalStrut(10));
+					List<Jugador> jugadores = get();
+					for (int i = 0; i < jugadores.size(); i++) {
+						int col = i % GRID_COLS;
+						int row = i / GRID_COLS;
+						JLabel fila = crearFilaJugador(jugadores.get(i), iconoCaja, iconoAvatar);
+						fila.setBounds(col * (CARD_W + CARD_GAP_H), row * (CARD_H + CARD_GAP_V), CARD_W, CARD_H);
+						lista.add(fila);
 					}
-
+					int rows = (jugadores.size() + GRID_COLS - 1) / GRID_COLS;
+					lista.setPreferredSize(new Dimension(GRID_W, rows * (CARD_H + CARD_GAP_V)));
 					lista.revalidate();
 					lista.repaint();
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}
+				} catch (Exception ex) { ex.printStackTrace(); }
 			}
 		}.execute();
-
 	}
 
+	/**
+	 * Crea un botón de imagen con efecto de oscurecimiento al pasar el ratón.
+	 *
+	 * @param ruta   Ruta al fichero de imagen del botón.
+	 * @param x      Posición horizontal.
+	 * @param y      Posición vertical.
+	 * @param accion Acción a ejecutar al hacer clic.
+	 * @return {@link JLabel} configurado como botón interactivo.
+	 */
+	private JLabel crearBotonImagen(String ruta, int x, int y, Runnable accion) {
+		ImageIcon icono    = ImageUtils.cargarImagen(ruta, BTN_W, BTN_H_IMG);
+		ImageIcon iconoOsc = ImageUtils.oscurecerImagen(icono);
+		JLabel btn = new JLabel(icono);
+		btn.setBounds(x, y, BTN_W, BTN_H_IMG);
+		btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn.addMouseListener(new MouseAdapter() {
+			@Override public void mouseEntered(MouseEvent e) { btn.setIcon(iconoOsc); }
+			@Override public void mouseExited(MouseEvent e)  { btn.setIcon(icono); }
+			@Override public void mouseClicked(MouseEvent e) { accion.run(); }
+		});
+		return btn;
+	}
+
+	/**
+	 * Crea el componente visual de una fila de jugador con su avatar y apodo.
+	 * Al hacer clic se navega al editor de mazo del jugador.
+	 *
+	 * @param j          Jugador a representar.
+	 * @param iconoCaja  Imagen de fondo de la fila.
+	 * @param iconoAvatar Imagen del icono de avatar.
+	 * @return {@link JLabel} configurado como fila interactiva.
+	 */
 	private JLabel crearFilaJugador(Jugador j, ImageIcon iconoCaja, ImageIcon iconoAvatar) {
-		ImageIcon iconoCajaOscura = ImageUtils.oscurecerImagen(iconoCaja);
+		ImageIcon iconoCajaOsc = ImageUtils.oscurecerImagen(iconoCaja);
 
 		JLabel caja = new JLabel(iconoCaja);
 		caja.setLayout(null);
-		caja.setMaximumSize(new Dimension(300, 70));
-		caja.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
+		caja.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
 		JLabel icono = new JLabel(iconoAvatar);
-		icono.setBounds(10, 10, 50, 50);
+		icono.setBounds(8, 12, 45, 45);
 
 		JLabel texto = new JLabel(j.getApodo());
-		texto.setForeground(Color.white);
-		texto.setFont(ImageUtils.cargarFuente(FONT_MEDIEVAL, 20f));
-		texto.setBounds(70, 20, 400, 30);
+		texto.setForeground(Color.WHITE);
+		texto.setFont(ImageUtils.cargarFuente(FONT_MEDIEVAL, 19f));
+		texto.setBounds(60, 20, CARD_W - 70, 30);
 
 		caja.add(texto);
 		caja.add(icono);
-
 		caja.addMouseListener(new MouseAdapter() {
-			@Override public void mouseEntered(MouseEvent e)  { caja.setIcon(iconoCajaOscura); }
+			@Override public void mouseEntered(MouseEvent e)  { caja.setIcon(iconoCajaOsc); }
 			@Override public void mouseExited(MouseEvent e)   { caja.setIcon(iconoCaja); }
 			@Override public void mouseReleased(MouseEvent e) { controller.lanzarMenuMazo(j); }
 		});
-
 		return caja;
 	}
 
-	private JButton botonEliminarJugador(ImageIcon imagen, int x, int y, int ancho, int alto) {
+	/**
+	 * Muestra un formulario para introducir los datos de un nuevo jugador y lo inserta en la base de datos.
+	 * Recarga la vista si la inserción es exitosa.
+	 */
+	private void accionAnadir() {
+		JTextField nombre    = new JTextField();
+		JTextField apellidos = new JTextField();
+		JTextField email     = new JTextField();
+		JTextField apodo     = new JTextField();
 
-		JButton btnAnadir = new JButton("Eliminar Jugador");
-		btnAnadir.setBounds(x, y, ancho, alto);
-		btnAnadir.setForeground(Color.white);
-		btnAnadir.setBackground(new Color(60, 120, 60));
-		btnAnadir.setFocusPainted(false); 
-		btnAnadir.setBorderPainted(false); 
-		btnAnadir.addActionListener(e -> {
+		JPanel form = new JPanel(new GridLayout(4, 2, 5, 10));
+		form.add(new JLabel("Nombre:"));    form.add(nombre);
+		form.add(new JLabel("Apellidos:")); form.add(apellidos);
+		form.add(new JLabel("Email:"));     form.add(email);
+		form.add(new JLabel("Apodo:"));     form.add(apodo);
 
-			JTextField apodo = new JTextField();
-
-			JPanel form = new JPanel(new GridLayout(4, 2, 5, 10));
-			form.add(new JLabel("Apodo:"));
-			form.add(apodo);
-
-			int result = JOptionPane.showConfirmDialog(null, form, "Eliminar Jugador", JOptionPane.OK_CANCEL_OPTION);
-
-			if (result == JOptionPane.OK_OPTION) {
-				JugadorDAO dao = new JugadorDAO();
-
-				Jugador jdelete = dao.buscarApodo(apodo.getText());
-				if (jdelete == null) {
-					JOptionPane.showMessageDialog(null, "No se ha encontrado al jugador", "Error",
-							JOptionPane.ERROR_MESSAGE);
-				} else {
-					dao.eliminar(jdelete.getId_jugador());
-					JOptionPane.showMessageDialog(null, "Jugador eliminado correctamente");
-					controller.lanzarMenuJugador(); 
-				}
-
+		int r = JOptionPane.showConfirmDialog(this, form, "Añadir jugador", JOptionPane.OK_CANCEL_OPTION);
+		if (r == JOptionPane.OK_OPTION) {
+			boolean ok = new JugadorDAO().insertar(
+				new Jugador(nombre.getText(), apellidos.getText(), email.getText(), apodo.getText()));
+			if (ok) {
+				JOptionPane.showMessageDialog(this, "✅ Jugador añadido correctamente");
+				controller.lanzarMenuJugador();
+			} else {
+				JOptionPane.showMessageDialog(this, "Error al añadir el jugador", "Error", JOptionPane.ERROR_MESSAGE);
 			}
-		});
-		return btnAnadir;
+		}
 	}
 
-	private JButton botonAnadirJugador(ImageIcon imagen, int x, int y, int ancho, int alto) {
+	/**
+	 * Solicita un apodo, busca al jugador y lo elimina junto con todas sus partidas y mazos.
+	 * Recarga la vista si la eliminación es exitosa.
+	 */
+	private void accionEliminar() {
+		JTextField apodo = new JTextField();
+		JPanel form = new JPanel(new GridLayout(1, 2, 5, 10));
+		form.add(new JLabel("Apodo:")); form.add(apodo);
 
-		JButton btnAnadir = new JButton("Añadir Jugador");
-		btnAnadir.setBounds(x, y, ancho, alto);
-		btnAnadir.setForeground(Color.white);
-		btnAnadir.setBackground(new Color(60, 120, 60));
-		btnAnadir.setFocusPainted(false); 
-		btnAnadir.setBorderPainted(false); 
-		btnAnadir.addActionListener(e -> {
-
-			JTextField nombre = new JTextField();
-			JTextField apellidos = new JTextField();
-			JTextField email = new JTextField();
-			JTextField apodo = new JTextField();
-
-			JPanel form = new JPanel(new GridLayout(4, 2, 5, 10));
-			form.add(new JLabel("Nombre:"));
-			form.add(nombre);
-			form.add(new JLabel("Apellidos:"));
-			form.add(apellidos);
-			form.add(new JLabel("Email:"));
-			form.add(email);
-			form.add(new JLabel("Apodo:"));
-			form.add(apodo);
-
-			int result = JOptionPane.showConfirmDialog(null, form, "Añadir jugador", JOptionPane.OK_CANCEL_OPTION);
-
-			if (result == JOptionPane.OK_OPTION) {
-				Jugador j = new Jugador(nombre.getText(), apellidos.getText(), email.getText(), apodo.getText());
-				boolean ok = new JugadorDAO().insertar(j);
-				if (ok) {
-					JOptionPane.showMessageDialog(null, "Jugador añadido correctamente");
-					controller.lanzarMenuJugador(); 
-				} else {
-					JOptionPane.showMessageDialog(null, "Error al añadir el jugador", "Error",
-							JOptionPane.ERROR_MESSAGE);
-				}
+		int r = JOptionPane.showConfirmDialog(this, form, "Eliminar Jugador", JOptionPane.OK_CANCEL_OPTION);
+		if (r == JOptionPane.OK_OPTION) {
+			JugadorDAO dao = new JugadorDAO();
+			Jugador jd = dao.buscarApodo(apodo.getText());
+			if (jd == null) {
+				JOptionPane.showMessageDialog(this, "No se ha encontrado al jugador", "Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				dao.eliminar(jd.getId_jugador());
+				JOptionPane.showMessageDialog(this, "🗑️ Jugador eliminado correctamente");
+				controller.lanzarMenuJugador();
 			}
-		});
-		return btnAnadir;
+		}
 	}
-	
-	private JButton botonActualizarJugador(ImageIcon imagen, int x, int y, int ancho, int alto) {
 
-		JButton btnActualizar = new JButton("Actualizar Jugador");
-		btnActualizar.setBounds(x, y, ancho, alto);
-		btnActualizar.setForeground(Color.white);
-		btnActualizar.setBackground(new Color(60, 120, 60)); 
-		btnActualizar.setFocusPainted(false); 
-		btnActualizar.setBorderPainted(false); 
-		btnActualizar.addActionListener(e -> {
+	/**
+	 * Muestra un formulario para modificar los datos de un jugador buscado por apodo.
+	 * Los campos dejados vacíos no se modifican. Recarga la vista si la actualización es exitosa.
+	 */
+	private void accionActualizar() {
+		JTextField apodoBuscar = new JTextField();
+		JTextField nuevoNombre    = new JTextField();
+		JTextField nuevosApellidos = new JTextField();
+		JTextField nuevoEmail     = new JTextField();
+		JTextField nuevoApodo     = new JTextField();
 
-			JTextField apodo = new JTextField();
-			JTextField nombre = new JTextField();
-			JTextField apellidos = new JTextField();
-			JTextField email = new JTextField();
+		JPanel form = new JPanel(new GridLayout(5, 2, 5, 10));
+		form.add(new JLabel("Apodo (jugador a buscar):")); form.add(apodoBuscar);
+		form.add(new JLabel("Nuevo Nombre (vacío = no cambiar):")); form.add(nuevoNombre);
+		form.add(new JLabel("Nuevos Apellidos (vacío = no cambiar):")); form.add(nuevosApellidos);
+		form.add(new JLabel("Nuevo Email (vacío = no cambiar):")); form.add(nuevoEmail);
+		form.add(new JLabel("Nuevo Apodo (vacío = no cambiar):")); form.add(nuevoApodo);
 
-			JPanel form = new JPanel(new GridLayout(4, 2, 5, 10));
-			form.add(new JLabel("Apodo (Jugador a buscar):"));
-			form.add(apodo);
-			form.add(new JLabel("Nuevo Nombre:"));
-			form.add(nombre);
-			form.add(new JLabel("Nuevos Apellidos:"));
-			form.add(apellidos);
-			form.add(new JLabel("Nuevo Email:"));
-			form.add(email);
+		int r = JOptionPane.showConfirmDialog(this, form, "Actualizar jugador", JOptionPane.OK_CANCEL_OPTION);
+		if (r != JOptionPane.OK_OPTION) return;
 
-			int result = JOptionPane.showConfirmDialog(null, form, "Actualizar jugador", JOptionPane.OK_CANCEL_OPTION);
+		JugadorDAO dao = new JugadorDAO();
+		Jugador j = dao.buscarApodo(apodoBuscar.getText().trim());
+		if (j == null) {
+			JOptionPane.showMessageDialog(this, "No se ha encontrado al jugador con ese apodo.", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 
-			if (result == JOptionPane.OK_OPTION) {
-				Jugador j = new Jugador(nombre.getText(), apellidos.getText(), email.getText(), apodo.getText());
-				
-				boolean ok = new JugadorDAO().actualizar(j); 
-				
-				if (ok) {
-					JOptionPane.showMessageDialog(null, "Jugador actualizado correctamente");
-					controller.lanzarMenuJugador(); 
-				} else {
-					JOptionPane.showMessageDialog(null, "Error al actualizar el jugador. Verifica que el apodo exista.", "Error",
-							JOptionPane.ERROR_MESSAGE);
-				}
-			}
-		});
-		return btnActualizar;
+		if (!nuevoNombre.getText().trim().isEmpty())     j.setNombre(nuevoNombre.getText().trim());
+		if (!nuevosApellidos.getText().trim().isEmpty()) j.setApellidos(nuevosApellidos.getText().trim());
+		if (!nuevoEmail.getText().trim().isEmpty())      j.setEmail(nuevoEmail.getText().trim());
+		if (!nuevoApodo.getText().trim().isEmpty())      j.setApodo(nuevoApodo.getText().trim());
+
+		if (dao.actualizar(j)) {
+			JOptionPane.showMessageDialog(this, "✏️ Jugador actualizado correctamente");
+			controller.lanzarMenuJugador();
+		} else {
+			JOptionPane.showMessageDialog(this, "Error al actualizar el jugador.", "Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 }

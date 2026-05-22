@@ -4,7 +4,7 @@
 
 Se desarrollará una aplicación de escritorio en Java con interfaz gráfica mediante Java Swing, conectada a una base de datos MySQL a través de la librería DBConnect. La aplicación simulará un juego de cartas por turnos entre dos jugadores.
 
-La aplicación contará con un menú principal desde el que se accederá a las siguientes secciones: **Iniciar Partida**, **Cartas**, **Mazo** e **Historial**. La sección de Cartas mostrará el catálogo completo de cartas disponibles con sistema de filtrado. La sección de Mazo permitirá al jugador construir su mazo seleccionando cartas del catálogo. El Historial mostrará un resumen de las partidas disputadas por el jugador.
+La aplicación contará con un menú principal desde el que se accederá a las siguientes secciones: **Iniciar Partida**, **Cartas**, **Mazo** e **Historial**. La sección de Cartas mostrará el catálogo completo de cartas disponibles con sistema de filtrado. La sección de Mazo permitirá al jugador construir su mazo seleccionando cartas del catálogo (maximo 10). El Historial mostrará un resumen de las partidas disputadas por el jugador.
 
 Una partida enfrenta a dos jugadores en un estadio. Cada jugador dispone de puntos de vida y mana, siendo el objetivo reducir la vida del rival a cero mediante el uso de cartas. El mana máximo disponible por turno aumenta progresivamente con el número de turno global.
 

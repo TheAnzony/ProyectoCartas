@@ -144,6 +144,27 @@ public class PartidaDAO {
     }
 
     /**
+     * Recupera todas las partidas de la base de datos ordenadas por fecha descendente.
+     *
+     * @return Lista de todas las {@link Partida} registradas. Vacía si no hay ninguna.
+     */
+    public List<Partida> listarTodas() {
+        String sql = "SELECT * FROM partida ORDER BY fecha DESC";
+        List<Partida> lista = new ArrayList<>();
+        try {
+            PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Partida p = construirPartida(rs);
+                if (p != null) lista.add(p);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+
+    /**
      * Elimina una partida por su identificador.
      *
      * @param id Identificador de la partida a eliminar.
