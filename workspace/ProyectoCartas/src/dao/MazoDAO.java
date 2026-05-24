@@ -147,20 +147,19 @@ public class MazoDAO {
 
     /**
      * Elimina un mazo por su identificador.
+     * El CASCADE de {@code MAZO→MAZO_CARTA} borra automáticamente todas las cartas asociadas.
      *
      * @param id Identificador del mazo a eliminar.
      * @return {@code true} si la eliminación fue exitosa, {@code false} en caso contrario.
      */
     public boolean eliminar(int id) {
         String sql = "DELETE FROM mazo WHERE id_mazo = ?";
-
         try {
             PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
             ps.setInt(1, id);
             int resultado = ps.executeUpdate();
             System.out.println(resultado > 0 ? "Mazo eliminado correctamente" : "No se ha podido eliminar el mazo");
             return resultado > 0;
-
         } catch (SQLException e) {
             e.printStackTrace();
         }

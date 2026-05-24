@@ -1,6 +1,7 @@
 package dao;
 
 import conexion.ConexionBD;
+import java.sql.CallableStatement;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -157,21 +158,21 @@ public class JugadorDAO {
     }
 
     /**
-     * Elimina un jugador por su identificador.
+     * Elimina un jugador y todos sus datos asociados mediante el procedimiento almacenado
+     * {@code eliminar_jugador}. El procedimiento borra primero las partidas donde el jugador
+     * participó o donde sus mazos están referenciados, y después elimina al jugador
+     * (el CASCADE de la BD se encarga de sus mazos y cartas de mazo).
      *
      * @param id Identificador del jugador a eliminar.
      * @return {@code true} si la eliminación fue exitosa, {@code false} en caso contrario.
      */
     public boolean eliminar(int id) {
-        String sql = "DELETE FROM jugador WHERE id_jugador = ?";
-
         try {
-            PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
-            ps.setInt(1, id);
-            int resultado = ps.executeUpdate();
-            System.out.println(resultado > 0 ? "Jugador eliminado correctamente" : "No se ha podido eliminar el jugador");
-            return resultado > 0;
-
+            CallableStatement cs = ConexionBD.getInstancia().getConexion().prepareCall("{CALL eliminar_jugador(?)}");
+            cs.setInt(1, id);
+            cs.execute();
+            System.out.println("Jugador eliminado correctamente");
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }

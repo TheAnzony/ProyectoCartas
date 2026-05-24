@@ -6,10 +6,10 @@
 - [x] Complejidad suficiente (8 tablas con relaciones)
 - [x] Coherencia con la lógica del juego
 - [x] Datos ficticios insertados (56 cartas, 4 elementos, 4 estadios, 2 jugadores)
-- [x] Procedimientos almacenados (`crear_partida`, `registrar_resultado_partida`)
-- [x] Funciones (`calcular_mana`, `calcular_dano_real`)
-- [x] JOINs y consultas multitabla (todas las vistas)
-- [x] Funciones agregadas AVG, COUNT, SUM (`vista_estadisticas_elemento`)
+- [x] Procedimientos almacenados (`eliminar_jugador`)
+- [ ] Funciones SQL (`calcular_mana`, `calcular_dano_real` — eliminadas con PROCEDIMIENTOS.sql)
+- [ ] JOINs y consultas multitabla (vistas — eliminadas con PROCEDIMIENTOS.sql)
+- [ ] Funciones agregadas AVG, COUNT, SUM (vistas — eliminadas con PROCEDIMIENTOS.sql)
 - [x] Borrado en cadena CASCADE (JUGADOR→MAZO→MAZO_CARTA)
 - [ ] Añadir subconsulta explícita (`WHERE ... IN (SELECT ...)` o similar) en una vista o consulta
 
@@ -25,7 +25,7 @@
 - [x] Gestión de jugadores — alta de jugador nuevo (inserción)
 - [x] Gestión de jugadores — editar datos del jugador (actualización)
 - [x] Gestión de jugadores — eliminar jugador (eliminación con CASCADE)
-- [ ] Eliminar mazo
+- [x] Eliminar mazo
 - [x] Eliminar carta de un mazo
 
 ---

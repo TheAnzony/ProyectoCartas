@@ -15,10 +15,6 @@ public class Partida {
 	private int id_jugador1;
 	/** Identificador del segundo jugador. */
 	private int id_jugador2;
-	/** Identificador del mazo usado por el jugador 1. */
-	private int id_mazo_j1;
-	/** Identificador del mazo usado por el jugador 2. */
-	private int id_mazo_j2;
 	/** Identificador del estadio donde se disputó la partida. */
 	private int id_estadio;
 	/** Fecha y hora de inicio de la partida. */
@@ -34,20 +30,16 @@ public class Partida {
 	 * @param id_partida  Identificador en la base de datos.
 	 * @param id_jugador1 Identificador del jugador 1.
 	 * @param id_jugador2 Identificador del jugador 2.
-	 * @param id_mazo_j1  Identificador del mazo del jugador 1.
-	 * @param id_mazo_j2  Identificador del mazo del jugador 2.
 	 * @param id_estadio  Identificador del estadio.
 	 * @param fecha       Fecha y hora de inicio.
 	 * @param id_ganador  Identificador del ganador, o {@code null} si no ha terminado.
 	 * @param num_turnos  Número de turnos jugados.
 	 */
-	public Partida(int id_partida, int id_jugador1, int id_jugador2, int id_mazo_j1, int id_mazo_j2, int id_estadio,
+	public Partida(int id_partida, int id_jugador1, int id_jugador2, int id_estadio,
 			LocalDateTime fecha, Integer id_ganador, int num_turnos) {
 		this.id_partida = id_partida;
 		this.id_jugador1 = id_jugador1;
 		this.id_jugador2 = id_jugador2;
-		this.id_mazo_j1 = id_mazo_j1;
-		this.id_mazo_j2 = id_mazo_j2;
 		this.id_estadio = id_estadio;
 		this.fecha = fecha;
 		this.id_ganador = id_ganador;
@@ -59,15 +51,11 @@ public class Partida {
 	 *
 	 * @param id_jugador1 Identificador del jugador 1.
 	 * @param id_jugador2 Identificador del jugador 2.
-	 * @param id_mazo_j1  Identificador del mazo del jugador 1.
-	 * @param id_mazo_j2  Identificador del mazo del jugador 2.
 	 * @param id_estadio  Identificador del estadio.
 	 */
-	public Partida(int id_jugador1, int id_jugador2, int id_mazo_j1, int id_mazo_j2, int id_estadio) {
+	public Partida(int id_jugador1, int id_jugador2, int id_estadio) {
 		this.id_jugador1 = id_jugador1;
 		this.id_jugador2 = id_jugador2;
-		this.id_mazo_j1 = id_mazo_j1;
-		this.id_mazo_j2 = id_mazo_j2;
 		this.id_estadio = id_estadio;
 		this.fecha = LocalDateTime.now();
 		this.id_ganador = null;
@@ -102,26 +90,6 @@ public class Partida {
 	/** @param id_jugador2 Nuevo jugador 2. */
 	public void setId_jugador2(int id_jugador2) {
 		this.id_jugador2 = id_jugador2;
-	}
-
-	/** @return Identificador del mazo del jugador 1. */
-	public int getId_mazo_j1() {
-		return id_mazo_j1;
-	}
-
-	/** @param id_mazo_j1 Nuevo mazo del jugador 1. */
-	public void setId_mazo_j1(int id_mazo_j1) {
-		this.id_mazo_j1 = id_mazo_j1;
-	}
-
-	/** @return Identificador del mazo del jugador 2. */
-	public int getId_mazo_j2() {
-		return id_mazo_j2;
-	}
-
-	/** @param id_mazo_j2 Nuevo mazo del jugador 2. */
-	public void setId_mazo_j2(int id_mazo_j2) {
-		this.id_mazo_j2 = id_mazo_j2;
 	}
 
 	/** @return Identificador del estadio de la partida. */
@@ -167,8 +135,8 @@ public class Partida {
 	@Override
 	public String toString() {
 		return "Partida [id_partida=" + id_partida + ", id_jugador1=" + id_jugador1 + ", id_jugador2=" + id_jugador2
-				+ ", id_mazo_j1=" + id_mazo_j1 + ", id_mazo_j2=" + id_mazo_j2 + ", id_estadio=" + id_estadio
-				+ ", fecha=" + fecha + ", id_ganador=" + id_ganador + ", num_turnos=" + num_turnos + "]";
+				+ ", id_estadio=" + id_estadio + ", fecha=" + fecha + ", id_ganador=" + id_ganador
+				+ ", num_turnos=" + num_turnos + "]";
 	}
 
 }

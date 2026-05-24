@@ -91,7 +91,7 @@ CREATE TABLE CARTA (
 CREATE TABLE JUGADOR (
     id_jugador     INT          NOT NULL AUTO_INCREMENT,
     nombre         VARCHAR(50)  NOT NULL,
-    apellidos      VARCHAR(100) NOT NULL,
+    apellidos      VARCHAR(100),
     email          VARCHAR(100) NOT NULL UNIQUE,
     apodo          VARCHAR(50)  NOT NULL,
     fecha_registro DATE         NOT NULL,
@@ -132,8 +132,6 @@ CREATE TABLE PARTIDA (
     id_partida  INT      NOT NULL AUTO_INCREMENT,
     id_jugador1 INT      NOT NULL,
     id_jugador2 INT      NOT NULL,
-    id_mazo_j1  INT      NOT NULL,
-    id_mazo_j2  INT      NOT NULL,
     id_estadio  INT      NOT NULL,
     fecha       DATETIME NOT NULL,
     id_ganador  INT               DEFAULT NULL,
@@ -141,8 +139,33 @@ CREATE TABLE PARTIDA (
     PRIMARY KEY (id_partida),
     FOREIGN KEY (id_jugador1) REFERENCES JUGADOR(id_jugador)  ON DELETE RESTRICT,
     FOREIGN KEY (id_jugador2) REFERENCES JUGADOR(id_jugador)  ON DELETE RESTRICT,
-    FOREIGN KEY (id_mazo_j1)  REFERENCES MAZO(id_mazo)        ON DELETE RESTRICT,
-    FOREIGN KEY (id_mazo_j2)  REFERENCES MAZO(id_mazo)        ON DELETE RESTRICT,
     FOREIGN KEY (id_estadio)  REFERENCES ESTADIO(id_estadio)  ON DELETE RESTRICT,
     FOREIGN KEY (id_ganador)  REFERENCES JUGADOR(id_jugador)  ON DELETE RESTRICT
 );
+
+
+-- ============================================================
+--  PROCEDIMIENTO: eliminar_jugador
+--  Borra las partidas del jugador (RESTRICT sobre JUGADOR) y
+--  luego elimina al jugador. El CASCADE JUGADOR→MAZO→MAZO_CARTA
+--  se encarga del resto automáticamente.
+-- ============================================================
+DELIMITER $$
+CREATE PROCEDURE eliminar_jugador(IN p_id INT)
+BEGIN
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+    END;
+
+    START TRANSACTION;
+
+    DELETE FROM partida
+    WHERE id_jugador1 = p_id OR id_jugador2 = p_id;
+
+    DELETE FROM jugador WHERE id_jugador = p_id;
+
+    COMMIT;
+END$$
+DELIMITER ;
+

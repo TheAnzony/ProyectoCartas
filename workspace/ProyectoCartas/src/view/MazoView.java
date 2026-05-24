@@ -21,6 +21,7 @@ import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -112,6 +113,21 @@ public class MazoView extends JPanel implements config {
 			}
 		});
 		add(btnVolver);
+
+		// ── Botón eliminar mazo ───────────────────────────────────────────
+		JLabel btnEliminarMazo = new JLabel("Eliminar mazo", JLabel.CENTER);
+		btnEliminarMazo.setBounds(ANCHO - 155, 18, 140, 35);
+		btnEliminarMazo.setForeground(Color.WHITE);
+		btnEliminarMazo.setFont(ImageUtils.cargarFuente(FONT_MEDIEVAL, 18f));
+		btnEliminarMazo.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btnEliminarMazo.setOpaque(true);
+		btnEliminarMazo.setBackground(new Color(160, 30, 30));
+		btnEliminarMazo.addMouseListener(new MouseAdapter() {
+			@Override public void mouseEntered(MouseEvent e)  { btnEliminarMazo.setBackground(new Color(110, 15, 15)); }
+			@Override public void mouseExited(MouseEvent e)   { btnEliminarMazo.setBackground(new Color(160, 30, 30)); }
+			@Override public void mouseReleased(MouseEvent e) { accionEliminarMazo(); }
+		});
+		add(btnEliminarMazo);
 
 		// ── Título ────────────────────────────────────────────────────────
 		JLabel titulo = new JLabel("Mazo de " + jugador.getApodo(), JLabel.CENTER);
@@ -391,6 +407,44 @@ public class MazoView extends JPanel implements config {
 					w.repaint();
 			}
 		}
+	}
+
+	/**
+	 * Muestra un diálogo de confirmación y elimina el mazo completo de la base de datos.
+	 * El CASCADE de {@code MAZO→MAZO_CARTA} borra automáticamente todas las cartas asociadas.
+	 * Tras la eliminación muestra un mensaje de éxito, vacía todos los slots, desombrea el
+	 * grid de selección y crea un nuevo mazo vacío para el jugador.
+	 * Si el mazo aún no se ha cargado (es {@code null}), la acción no hace nada.
+	 */
+	private void accionEliminarMazo() {
+		if (mazoActual == null) return;
+		int confirm = JOptionPane.showConfirmDialog(this,
+				"¿Eliminar el mazo «" + mazoActual.getNombre() + "»?\nSe borrarán todas sus cartas.",
+				"Confirmar eliminación", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+		if (confirm != JOptionPane.YES_OPTION) return;
+
+		if (!new MazoDAO().eliminar(mazoActual.getId_mazo())) {
+			JOptionPane.showMessageDialog(this, "Error al eliminar el mazo.", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+
+		JOptionPane.showMessageDialog(this, "Mazo eliminado correctamente.");
+
+		for (int i = 0; i < NUM_SLOTS; i++) {
+			slotCards[i] = null;
+			vaciarSlot(i);
+		}
+
+		for (Map.Entry<Integer, boolean[]> entry : shadingState.entrySet()) {
+			entry.getValue()[0] = false;
+			JPanel w = gridWrappers.get(entry.getKey());
+			if (w != null) w.repaint();
+		}
+
+		MazoDAO mazoDAO = new MazoDAO();
+		mazoDAO.insertar(new Mazo(jugador.getId_jugador(), "Mazo de " + jugador.getApodo()));
+		List<Mazo> mazos = mazoDAO.listarPorJugador(jugador.getId_jugador());
+		mazoActual = mazos.isEmpty() ? null : mazos.get(0);
 	}
 
 }

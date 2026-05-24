@@ -59,7 +59,6 @@ public class PartidaView extends JPanel implements config {
 	private final List<Carta> seleccionJ2 = new ArrayList<>();
 	private List<Carta> mazoJ1 = new ArrayList<>();
 	private List<Carta> mazoJ2 = new ArrayList<>();
-	private int idMazoJ1 = -1, idMazoJ2 = -1;
 
 	private final Map<Integer, JPanel> mazoWrappers = new HashMap<>();
 
@@ -113,7 +112,6 @@ public class PartidaView extends JPanel implements config {
 				try {
 					get();
 					mazoJ1  = c1;  mazoJ2  = c2;
-					idMazoJ1 = m1id; idMazoJ2 = m2id;
 					elementoActivo = estadio.getId_elemento_activo();
 					String nomElem = nombreElemento.getOrDefault(elementoActivo, "");
 					if (!nomElem.isEmpty())
@@ -579,7 +577,6 @@ public class PartidaView extends JPanel implements config {
 			@Override protected Void doInBackground() {
 				Partida p = new Partida(
 					j1.getId_jugador(), j2.getId_jugador(),
-					idMazoJ1, idMazoJ2,
 					estadio.getId_estadio()
 				);
 				p.setId_ganador(ganador.getId_jugador());

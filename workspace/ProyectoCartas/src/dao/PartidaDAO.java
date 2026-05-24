@@ -22,16 +22,13 @@ public class PartidaDAO {
             int idPartida = rs.getInt("id_partida");
             int idJugador1 = rs.getInt("id_jugador1");
             int idJugador2 = rs.getInt("id_jugador2");
-            int idMazoJ1 = rs.getInt("id_mazo_j1");
-            int idMazoJ2 = rs.getInt("id_mazo_j2");
             int idEstadio = rs.getInt("id_estadio");
             LocalDateTime fecha = rs.getObject("fecha", LocalDateTime.class);
             int ganadorRaw = rs.getInt("id_ganador");
             Integer idGanador = rs.wasNull() ? null : ganadorRaw;
             int numTurnos = rs.getInt("num_turnos");
 
-            return new Partida(idPartida, idJugador1, idJugador2, idMazoJ1, idMazoJ2,
-                    idEstadio, fecha, idGanador, numTurnos);
+            return new Partida(idPartida, idJugador1, idJugador2, idEstadio, fecha, idGanador, numTurnos);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -45,19 +42,17 @@ public class PartidaDAO {
      * @return {@code true} si la inserción fue exitosa, {@code false} en caso contrario.
      */
     public boolean insertar(Partida pa) {
-        String sql = "INSERT INTO partida (id_jugador1, id_jugador2, id_mazo_j1, id_mazo_j2, id_estadio, fecha, id_ganador, num_turnos) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO partida (id_jugador1, id_jugador2, id_estadio, fecha, id_ganador, num_turnos) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
 
         try {
             PreparedStatement ps = ConexionBD.getInstancia().getConexion().prepareStatement(sql);
             ps.setInt(1, pa.getId_jugador1());
             ps.setInt(2, pa.getId_jugador2());
-            ps.setInt(3, pa.getId_mazo_j1());
-            ps.setInt(4, pa.getId_mazo_j2());
-            ps.setInt(5, pa.getId_estadio());
-            ps.setObject(6, pa.getFecha());
-            ps.setObject(7, pa.getId_ganador());
-            ps.setInt(8, pa.getNum_turnos());
+            ps.setInt(3, pa.getId_estadio());
+            ps.setObject(4, pa.getFecha());
+            ps.setObject(5, pa.getId_ganador());
+            ps.setInt(6, pa.getNum_turnos());
 
             int resultado = ps.executeUpdate();
             System.out.println(resultado > 0 ? "Partida insertada correctamente" : "No se ha podido insertar la partida");
