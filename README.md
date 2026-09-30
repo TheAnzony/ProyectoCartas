@@ -107,6 +107,6 @@ ProyectoCartas/
 | Nombre | GitHub |
 |---|---|
 | Antonio Nicolás Ruiz | [@TheAnzony](https://github.com/TheAnzony) |
-| Jonathan Ortiz Belmar | [@BlueJhoon95](https://https://github.com/BlueJhoon95) |
+| Jonathan Ortiz Belmar | [@BlueJhoon95](https://github.com/BlueJhoon95) |
 
 Estudiantes de DAM en la UCAM.
